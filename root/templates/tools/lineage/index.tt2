@@ -1,0 +1,6 @@
+<h1>Cell lineage browser</h1>
+
+<p>Browse the cell lineage with cytoscape</p>
+
+<p>[% test %]</p>
+
