@@ -1612,7 +1612,7 @@ var Scrolling = (function(){
          *     if exists
             * data: data
             * elementType: nodes or edges
-            * attr: some key under data.nodes[i].data
+            * attr: some key under data[elementType][i].data
             * mapping: obj mapping oldVal: newVal for attr
             * (toType): new values will be put into this attr, if attr 
             *   shouldn't be touched
@@ -1629,13 +1629,11 @@ var Scrolling = (function(){
             }
         }
         
-        var nodeShapeMapper = {
-            Rearrangement: "hexagon",
-            Gene: "octagon",
-            Molecule: "triangle",
-            other: "ellipse"
-        };
-        mapAttr('nodes', 'ntype', nodeShapeMapper, 'shape');
+        // Execute custom mappers
+        for(var i=0; i < data.mappers.length; i++){
+            var m = data.mappers[i];
+            mapAttr(m.elementType, m.attribute, m.mapping, m.toType);
+        }
         
         // Color of each type, in order.  Matches legend.  See interaction_details.tt2
         var edgeColor = ["#0A6314", "#08298A","#B40431","#FF8000", "#00E300","#05C1F0", "#8000FF", "#69088A", "#B58904", "#E02D8A", "#FFFC2E" ];
