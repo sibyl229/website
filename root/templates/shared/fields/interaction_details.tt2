@@ -72,31 +72,54 @@
     <script type="text/javascript">
     (function(){
       var data = {
-            nodes: [  [% FOREACH node IN NODES.keys.sort %]
-                          { data: { 
-                                id: "[% NODES.$node.label %]", 
-                                name: "[% NODES.$node.label %]", 
-                                number:[% loop.index %],
-                                ntype: "[%  NODES.$node.class.replace('_', ' ') %]",
-                                link:"[% get_url(NODES.$node.class, NODES.$node.id ,NODES.$node.taxonomy) %]",
-                                predicted: [% NODES.$node.predicted %],
-                          }},
-                      [% END %]
-                  ],
-            edges:[ [% FOREACH obj IN EDGES %]
-                          { data: { 
-                            id: "e[% loop.count %]", 
-                            label: "[% obj.interaction.id %]" ,
-                            source: "[% obj.effector.label %]", 
-                            target: "[% obj.affected.label %]",
-                            type: "[% obj.type %]", 
-                            direction:"[% obj.direction %]",
-                            width: [% obj.interactions.size %],
-                            phenotype: "[% obj.phenotype.label %]",
-                            nearby: [% obj.nearby %],
-                          }},
-                    [% END %]
-                  ],
+            nodes: [  
+                [% FOREACH node IN NODES.keys.sort %]
+                    { data: { 
+                        id: "[% NODES.$node.label %]", 
+                        name: "[% NODES.$node.label %]", 
+                        number:[% loop.index %],
+                        ntype: "[%  NODES.$node.class.replace('_', ' ') %]",
+                        link:"[% get_url(NODES.$node.class, NODES.$node.id ,NODES.$node.taxonomy) %]",
+                        predicted: [% NODES.$node.predicted %],
+                    }},
+                [% END %]
+            ],
+            edges:[ 
+                [% FOREACH obj IN EDGES %]
+                    { data: { 
+                    id: "e[% loop.count %]", 
+                    label: "[% obj.interaction.id %]" ,
+                    source: "[% obj.effector.label %]", 
+                    target: "[% obj.affected.label %]",
+                    type: "[% obj.type %]", 
+                    direction:"[% obj.direction %]",
+                    width: [% obj.interactions.size %],
+                    phenotype: "[% obj.phenotype.label %]",
+                    nearby: [% obj.nearby %],
+                    }},
+                [% END %]
+            ],
+            [%# 
+                = Custom cytoscape mappers =
+                * elementType: nodes or edges
+                * attr: some key under data[elementType][i].data
+                * mapping: obj mapping oldVal: newVal for attr
+                * (toType): new values will be put into this attr, if attr
+                *   itself shouldn't be touched
+            %]
+            mappers:[
+                {
+                    elementType: 'nodes',
+                    attribute: 'ntype',
+                    toType: 'shape',
+                    mapping: {
+                        Rearrangement: "hexagon",
+                        Gene: "octagon",
+                        Molecule: "triangle",
+                        other: "ellipse"
+                    }
+                }
+            ],
         },
         types = [ [% FOREACH obj IN TYPES.keys.sort %]
                           "[% obj %]",
