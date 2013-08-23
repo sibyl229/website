@@ -5,6 +5,7 @@ use warnings;
 use Moose;
 use JSON::XS;
 use URI::Escape;
+use Text::CSV;
 # use String::Escape qw( printable unprintable );
 
 BEGIN { extends 'Catalyst::Controller::REST' }
@@ -18,6 +19,7 @@ __PACKAGE__->config(
     'text/html'        => 'YAML::HTML',
     'text/xml'         => 'XML::Simple',
     'application/json' => 'JSON',
+    'text/csv'         => [ 'View', 'CSV' ],
     }
     );
 
@@ -37,7 +39,7 @@ sub search :Path('/search') Args {
     $type = 'all' unless $query;
    
     # hack for references widget
-    if($page_count =~ m/\D/){
+    unless($page_count =~ m/\d|^all$/){
       $type = $page_count =~ m/references/ ? 'paper' : $page_count;
       $page_count = 1;
     }
@@ -46,6 +48,8 @@ sub search :Path('/search') Args {
     $c->stash->{nostar} = $c->req->param("nostar");
     $c->stash->{'search_guide'} = $query if($c->req->param("redirect"));
     $c->stash->{opt_q} = $c->req->param("q");
+
+    $page_count = 'all' if($c->req->param("download"));
 
     $c->response->headers->expires(time);
     my $headers = $c->req->headers;
@@ -62,7 +66,7 @@ sub search :Path('/search') Args {
       
     my $search = $type unless($type=~/all/);
 
-    if($page_count>1 || $content_type ne 'text/html') {
+    if($page_count>1 || $page_count eq 'all' || $content_type ne 'text/html') {
       $c->stash->{template} = "search/result_list.tt2";
       $c->stash->{noboiler} = 1;
     }elsif($c->req->param("inline") || $c->req->param("widget")){
@@ -95,11 +99,12 @@ sub search :Path('/search') Args {
     }
 
     # this is the actual search
-    my $it= $api->xapian->search($c, $tmp_query, $page_count, $search, $c->stash->{species});
+    my ($it, $error) = $api->xapian->search($c, $tmp_query, $page_count, $search, $c->stash->{species});
 
     $c->stash->{page} = $page_count;
     $c->stash->{type} = $type;
     $c->stash->{count} = $api->xapian->search_count($c, $tmp_query, $search, $c->stash->{species});
+    $c->stash->{error} = $error;
     my @ret = map { $api->xapian->_get_obj($c, $_->get_document ) } @{$it->{struct}}; #see if you can cache @ret
     $c->stash->{results} = \@ret;
     $c->stash->{querytime} = $it->{querytime};
@@ -108,6 +113,31 @@ sub search :Path('/search') Args {
     if ( $content_type eq 'text/html' ) {
       $c->forward('WormBase::Web::View::TT');
       return;
+    }
+
+    # Change the data structure a bit so the CSV converter can read it
+    if ( $content_type eq 'text/csv' ) {
+      my %seen;
+      @ret = map { 
+          my $ret = { id => $_->{name}->{id}, 
+                      label => $_->{name}->{label},
+                      class => $_->{name}->{class},
+                      taxonomy => $_->{taxonomy}->{genus} . ' ' . $_->{taxonomy}->{species}};
+          foreach my $key (keys %{$_}){
+            if (ref($_->{$key}) eq 'ARRAY'){
+              $ret->{$key} = join(', ', map { if(ref($_) eq 'HASH'){$_->{label}}else{$_ || 1}} @{$_->{$key}});
+              $seen{$key} = 1;
+            }
+          }
+          $ret;
+        } @ret;
+
+      my @columns = (('id', 'label', 'class', 'taxonomy'), keys %seen);
+      # unshift(@columns, ('id', 'label', 'class', 'taxonomy'));
+      $c->stash ( data => \@ret, 
+                  columns => \@columns, 
+                  filename => "$query\_$type\_" . $c->stash->{species} . $api->version . ".csv" 
+                  );
     }
 
     $self->status_ok(

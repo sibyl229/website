@@ -85,9 +85,7 @@ sub interactions  {
     my $self   = shift;
     my $object = $self->object;
     my $class = $object->class;
-    
-    print $class."\n";
-    
+
     my @edges = values %{$self->_interactions->{edgeVals}};
 
     my $results = $self->_get_interactions($self->_interactions, 1, 1);
@@ -194,7 +192,7 @@ sub _get_interactions {
     if($nearby && (scalar @objects > 3000)){
         $data->{showall} = 0;
         return $data;
-    } 
+    }
 
     $self->log->debug("nearby: $nearby, size: ", scalar @objects);
 
@@ -271,10 +269,10 @@ sub _get_interaction_info {
     return \%results if(($type eq 'No_interaction'));
     $type =~ s/_/ /g;
     if ($type eq 'Regulatory') {
-	if ( my $reg_result = $interaction->Regulation_result ) {
-	    if ("$reg_result" =~ /^(.*tive)_regulate$/) { $type = $1 . "ly Regulates" }
-	    elsif ("$reg_result" eq 'Does_not_regulate') { $type = "Does Not Regulate" }
-	}
+    if ( my $reg_result = $interaction->Regulation_result ) {
+        if ("$reg_result" =~ /^(.*tive)_regulate$/) { $type = $1 . "ly Regulates" }
+        elsif ("$reg_result" eq 'Does_not_regulate') { $type = "Does Not Regulate" }
+    }
     }
     # Filter low confidence predicted interactions.
     return \%results if ($interaction->Log_likelihood_score || 1000) <= 1.5 && $object->class ne 'Interaction' && $type =~ m/predicted/i;
@@ -336,15 +334,15 @@ sub _get_gene {
     if ($type eq 'Interactor_overlapping_CDS') { return $obj->Gene }
     elsif ($type eq 'Interactor_overlapping_protein') { return $obj->Corresponding_CDS->Gene if $obj->Corresponding_CDS }
     elsif ($type eq 'PCR_interactor') {
-	my $corr_gene = $obj->Overlaps_CDS->Gene if $obj->Overlaps_CDS;
-	$corr_gene ||= $obj->Overlaps_transcript->Gene if $obj->Overlaps_transcript;
-	$corr_gene ||= $obj->Overlaps_pseudogene->Gene if $obj->Overlaps_pseudogene;
-	return $corr_gene;
+      my $corr_gene = $obj->Overlaps_CDS->Gene if $obj->Overlaps_CDS;
+      $corr_gene ||= $obj->Overlaps_transcript->Gene if $obj->Overlaps_transcript;
+      $corr_gene ||= $obj->Overlaps_pseudogene->Gene if $obj->Overlaps_pseudogene;
+      return $corr_gene;
     } elsif ($type eq 'Sequence_interactor') {
-	my $corr_gene = $obj->Matching_CDS->Gene if $obj->Matching_CDS;
-	$corr_gene ||= $obj->Matching_transcript->Gene if $obj->Matching_transcript;
-	$corr_gene ||= $obj->Matching_pseudogene->Gene if $obj->Matching_pseudogene;
-	return $corr_gene;
+      my $corr_gene = $obj->Matching_CDS->Gene if $obj->Matching_CDS;
+      $corr_gene ||= $obj->Matching_transcript->Gene if $obj->Matching_transcript;
+      $corr_gene ||= $obj->Matching_pseudogene->Gene if $obj->Matching_pseudogene;
+      return $corr_gene;
     }
 }
 

@@ -60,10 +60,12 @@
             result.push(tag2link(data.$key));
           END;
         END;
-      ELSE;
+      ELSIF ref(data) == 'ARRAY';
         FOREACH item IN data;
           result.push(tag2link(item));
         END;
+      ELSE;
+        data;
       END;
       IF (expandable_title && (result.size > 10));
         WRAPPER toggle title=result.size _ ' ' _ expandable_title;
@@ -285,9 +287,9 @@
     END;
 
     MACRO match_link(link) BLOCK;
-      IF !site.external_urls.defined(link);;
-        link = link FILTER lower;
-        IF link.match('^(sw|sptrembl|tr)$'); link = 'uniprot'; END;
+      IF !site.external_urls.defined(link);
+        llink = link FILTER lower;
+        IF llink.match('^(sw|sptrembl|tr)$'); link = 'uniprot'; END;
       END;
       link;
     END;

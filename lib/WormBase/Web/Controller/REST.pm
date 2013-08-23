@@ -349,7 +349,6 @@ sub download_POST {
      
     my $filename=$c->req->body_parameters->{filename};
     $filename =~ s/\s/_/g;
-        my $csv = "test";
     $c->response->header('Content-Type' => 'text/html');
     $c->res->header('Content-Disposition', qq[attachment; filename="$filename"]);
     $c->response->body($c->req->body_parameters->{content});
@@ -487,7 +486,7 @@ sub feed :Path('/rest/feed') :Args :ActionClass('REST') {}
 
 sub feed_GET {
     my ($self,$c,@args) = @_;
-    $c->stash->{noboiler} = 1;
+
     $c->stash->{current_time}=time();
 
     my $type = shift @args;
@@ -497,8 +496,12 @@ sub feed_GET {
       my $wbid = shift @args;
       my $widget = shift @args;
       my $name = shift @args;
+      $c->stash->{search} = 1 if ($widget eq 'references' && $wbid =~ m/^WB/);
       if($widget=~m/^static-widget-([\d]+)/){
         $c->stash->{url} = $c->uri_for('widget/static', $1)->path;
+      }elsif ($widget=~m/browse/){
+        $c->stash->{search} = 1;
+        $c->stash->{url} = $c->uri_for("/search", $class, "*")->path;
       }else{
         $c->stash->{url} = $c->uri_for('widget', $class, $wbid, $widget)->path;
       }
@@ -515,28 +518,16 @@ sub feed_GET {
           return;
         }
         $c->stash->{comments} = \@comments if(@comments);  
-      }elsif($type eq "issue"){
-        my @issues;
-        if($page) {
-          @issues = $page->issues;
-          $c->stash->{issue_type} = 'page';
-        }else {
-          @issues= $c->user->issues_reported if $c->user;
-          push(@issues, $c->user->issues_responsible) if $c->user;
-          $c->stash->{issue_type} = 'user';
-        }
-        if($c->req->params->{count}){
-          $c->response->body(scalar(@issues));
-          return;
-        }
-        $c->stash->{issues} = \@issues if(@issues);  
+      }else{
+        # return 404 if the feed cannot be found
+        $c->detach('/soft_404');
+        return;
       }
     }
-      
-     $c->stash->{template} = "feed/$type.tt2"; 
-     $c->forward('WormBase::Web::View::TT') ;
-      $c->response->headers->expires(time);
-     #$self->status_ok($c,entity => {});
+    $c->stash->{noboiler} = 1;
+    $c->stash->{template} = "feed/$type.tt2"; 
+    $c->forward('WormBase::Web::View::TT') ;
+    $c->response->headers->expires(time);
 }
 
 sub feed_POST {
@@ -654,7 +645,7 @@ sub widget_GET {
     $c->response->header( 'Content-Type' => $content_type );
 
     # references widget - no need for an object
-    if ( $widget =~ m/references/i ) {
+    if ( $widget =~ m/references/i && $name =~ m/^WB/ ) {
           $c->req->params->{widget} = $widget;
           $c->req->params->{class} = $class;
           $c->go('search', 'search');
@@ -669,7 +660,7 @@ sub widget_GET {
         $c->response->body($cached_data);
         $c->detach();
         return;
-    }else {
+    } else {
         my $api = $c->model('WormBaseAPI');
         my $object = ($name eq '*' || $name eq 'all'
                    ? $api->instantiate_empty(ucfirst $class)
@@ -829,7 +820,7 @@ sub widget_static_POST {
     if($c->check_any_user_role(qw/admin curator editor/)){ 
 
       #only admins can delete
-      if($c->req->params->{delete} && $c->check_user_roles("admin")){ 
+      if($c->req->params->{delete} && $c->check_any_user_role("admin", "curator")){ 
         my $widget = $c->model('Schema::Widgets')->find({widget_id=>$widget_id});
         $widget->delete();
         $widget->update();
@@ -1118,7 +1109,7 @@ END
 # Create a more informative title
   my $pseudo_title = substr($content,0,35) . '...';
   my $data = { title => $title . ': ' . $pseudo_title,
-	       body  => $content,
+	       body  => "$content",
 	       labels => [ 'HelpDesk' ],
   };
 
@@ -1318,6 +1309,9 @@ sub field :Path('/rest/field') :Args(3) :ActionClass('REST') {}
 sub field_GET {
     my ( $self, $c, $class, $name, $field ) = @_;
 
+    # Cache key - "$class_$field_$name"
+    my $key = join( '_', $class, $field, $name );
+
     my $headers = $c->req->headers;
     $c->log->debug( $headers->header('Content-Type') );
     $c->log->debug($headers);
@@ -1325,29 +1319,38 @@ sub field_GET {
         = $headers->content_type
         || $c->req->params->{'content-type'}
         || 'text/html';
-    my $api = $c->model('WormBaseAPI');
-    my $object = $name eq '*' || $name eq 'all'
-               ? $api->instantiate_empty(ucfirst $class)
-               : $api->fetch({ class => ucfirst $class, name => $name });
 
-    # Supress boilerplate wrapping.
-    $c->stash->{noboiler} = 1;
+    my ( $cached_data, $cache_source ) = $c->check_cache($key);
+    if($cached_data && (ref $cached_data eq 'HASH')){
+        $c->stash->{$key} = $cached_data;
+    } else {
+      my $api = $c->model('WormBaseAPI');
+      my $object = $name eq '*' || $name eq 'all'
+                 ? $api->instantiate_empty(ucfirst $class)
+                 : $api->fetch({ class => ucfirst $class, name => $name });
 
-    my $data   = $object->$field();
+      # Supress boilerplate wrapping.
+      $c->stash->{noboiler} = 1;
 
-    # Include the full uri to the *requested* object.
-    # IE the page on WormBase where this should go.
-    # TODO: 2011.03.20 TH: THIS NEEDS TO BE UPDATED, TESTED, VERIFIED
+      my $data   = $object->$field();
+      $c->stash->{$field} = $data;
+
+      # Include the full uri to the *requested* object.
+      # IE the page on WormBase where this should go.
+      # TODO: 2011.03.20 TH: THIS NEEDS TO BE UPDATED, TESTED, VERIFIED
+
+      $c->set_cache($key => $data);
+    }
+
     my $uri = $c->uri_for( "/species", $class, $name )->path;
 
     $c->response->header( 'Content-Type' => $content_type );
     if ( $content_type eq 'text/html' ) {
-       $c->stash->{template} = $self->_select_template( 'field', $class, $field );
-      $c->stash->{$field} = $data;
+      $c->stash->{template} = $self->_select_template( 'field', $class, $field );
       $c->forward('WormBase::Web::View::TT');
     }elsif($content_type =~ m/image/i) {
       
-      $c->res->body($data);
+      $c->res->body($c->stash->{$field});
     }
     $self->status_ok(
         $c,
@@ -1355,7 +1358,7 @@ sub field_GET {
             class  => $class,
             name   => $name,
             uri    => "$uri",
-            $field => $data
+            $field => $c->stash->{$field}
         }
     );
 }

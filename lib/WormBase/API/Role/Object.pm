@@ -379,11 +379,6 @@ sub _build_best_blastp_matches {
         $_->{covered} = $covered;
     }
 
-    # NOT HANDLED YET
-    # my $links = Configuration->Protein_links;
-
-    my %seen;  # Display only one hit / species
-
     # I think the perl glitch on x86_64 actually resides *here*
     # in sorting hash values.  But I can't replicate this outside of a
     # mod_perl environment
@@ -423,7 +418,7 @@ sub _build_best_blastp_matches {
         $species =~ /(.*)\.(.*)/;
         my $taxonomy = {genus => $1, species => $2};
 
-        #     next if ($seen{$species}++);
+
         my $id;
         if ($hit =~ /(\w+):(.+)/) {
             my $prefix    = $1;
@@ -433,7 +428,10 @@ sub _build_best_blastp_matches {
         }
         push @hits, {
             taxonomy => $taxonomy,
-            hit      => $self->_pack_obj($hit),
+            # custom packing for linking out to external sources
+            hit      => {   class => "$class", 
+                            id => "$id" || "$hit", 
+                            label => "$hit"},
             description => $description && "$description",
             evalue      => sprintf("%7.3g", 10**-$best{$_}{score}),
             percent     => $length == 0 ? '0' : sprintf("%2.1f%%", 100 * ($best{$_}{covered}) / $length),
@@ -1399,10 +1397,11 @@ sub _build_references {
     my $self   = shift;
     my $object = $self->object;
     # Could also use ModelMap...
-    my $tag = (eval {$object->Reference}) ? 'Reference' : 'Paper';
-    my $data = $self->_pack_objects($object->$tag);
+    my $tag = $object->at('Reference') || $object->at('Paper') || '';
+    my @references = $object->$tag if $tag;
+    @references = map { $self->_api->xapian->_get_tag_info(undef, "$_", 'paper', 1) } @references;
     return { description => 'references associated with this object',
-	     data        => %$data ? $data : undef };
+             data        => @references ? \@references : undef };
 }
 
 =head3 remarks
@@ -2219,17 +2218,8 @@ sub _get_count{
   # get our current column location
   my $col = $first_item->{'.col'};
 
-  # check each row to make sure they are all objects
-  foreach my $row (@{$first_item->{'.raw'}}){
-    unless(@{$row}[$col]){
-        # if a row is not an object, fetch the tag and return the count
-        # we try to avoid doing this since it breaks ace for large amts of objects
-        return scalar $obj->get($tag, 0)->col;
-    }
-  }
-
-  # just return the row counts, which should equal the amount of objects for this tag
-  return scalar @{$first_item->{'.raw'}};
+  # grep for rows that are objects
+  return scalar ( grep { @{$_}[$col] } @{$first_item->{'.raw'}} );
 }
 
 

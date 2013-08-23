@@ -1,3 +1,6 @@
+
+
+
 [%
   MACRO interaction_table BLOCK;
   WRAPPER $field_block title="Interactions" key="interactions";
@@ -19,7 +22,6 @@
 %]
 
 
-
 [% IF fields.interactions.data.edges.size> 0 %]
   [% IF fields.interactions.data.edges_all.size > 0 %]
       [% TYPES = fields.interactions.data.types %]
@@ -27,6 +29,8 @@
       [% NODES = fields.interactions.data.nodes %]
       [% EDGES = fields.interactions.data.edges_all %]
       [% CLASSTYPE = fields.interactions.data.class %]
+      
+      
       [% WRAPPER shared/fields/interaction_details.tt2; 
            #this is in a wrapper so the js will execute at the bottom of the widget and prevent blocking
            interaction_table;
@@ -39,6 +43,7 @@
   [% interaction_table %]
 [% END %]
 
+<!--
 <a href="http://genemania.org/link?o=6239&g=[%
 FOREACH edge IN fields.interactions.data.edges.sort;
     IF edge.effector.class == 'Gene';
@@ -50,3 +55,4 @@ FOREACH edge IN fields.interactions.data.edges.sort;
     "$name|";
     END;
 END; %]" target="_blank">View Interaction Network in GeneMANIA</a>
+-->
