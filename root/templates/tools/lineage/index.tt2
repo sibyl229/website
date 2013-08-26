@@ -1,6 +1,120 @@
+<style>
+    #cy {
+        width: 750px;
+        height: 750px;
+        margin:0 auto;
+        position: absolute;
+    }   
+    #cy-container {
+        width: 750px;
+        height: 750px;
+        margin:0 auto;
+        float: left;
+        margin-bottom: 30px;
+        border:5px solid black;
+    }
+</style>
+
 <h1>Cell lineage browser</h1>
 
 <p>Browse the cell lineage with cytoscape</p>
 
+<div id="cy-container">
+
+    
+    <div id="cy" >
+
+    </div>
+    
+    
+</div>
+
+<br style="clear:both"/>
+
+
 <p>[% test %]</p>
 
+<script type="text/javascript">
+(function(){
+    var testData = {
+    nodes: [
+      { data: { id: 'j', name: 'Jerry' } },
+      { data: { id: 'e', name: 'Elaine' } },
+      { data: { id: 'k', name: 'Kramer' } },
+      { data: { id: 'n', name: 'Newman' } },
+      { data: { id: 'g', name: 'George' } }
+    ],
+    edges: [
+      { data: { source: 'j', target: 'e'}},
+      { data: { source: 'j', target: 'k' , type:'q', dir:'d1' } },
+      { data: { source: 'j', target: 'g' } },
+      { data: { source: 'e', target: 'j' , type:'asdf', dir:'d1'} },
+      { data: { source: 'e', target: 'k' } },
+      { data: { source: 'k', target: 'j' } },
+      { data: { source: 'k', target: 'e' } },
+      { data: { source: 'k', target: 'g' , type:'asdf', dir:'d2'} },
+      { data: { source: 'g', target: 'n' , visibility:'hidden'} }
+    ], 
+    layout: {
+        name: 'circle'
+    }
+  };
+  
+    var data = {
+        nodes: [  
+            [% FOREACH node IN NODES.keys.sort %]
+                { data: { 
+                    id: "[% NODES.$node.label %]", 
+                    name: "[% NODES.$node.label %]", 
+                    ntype: "[%  NODES.$node.class.replace('_', ' ') %]",
+                }},
+            [% END %]
+        ],
+        edges:[ 
+            [% FOREACH obj IN EDGES %]
+                { data: { 
+                id: "e[% loop.count %]", 
+                label: "[% obj.interaction.id %]" ,
+                source: "[% obj.effector.label %]", 
+                target: "[% obj.affected.label %]",
+                type: "[% obj.type %]", 
+                direction:"[% obj.direction %]",
+                width: [% obj.interactions.size %],
+                }},
+            [% END %]
+        ],
+        [%# 
+            = Custom cytoscape mappers =
+            * elementType: nodes or edges
+            * attr: some key under data[elementType][i].data
+            * mapping: obj mapping oldVal: newVal for attr
+            * (toType): new values will be put into this attr, if attr
+            *   itself shouldn't be touched
+        %]
+        mappers:[
+            {
+                elementType: 'nodes',
+                attribute: 'ntype',
+                toType: 'shape',
+                mapping: {
+                    Rearrangement: "hexagon",
+                    Gene: "octagon",
+                    Molecule: "triangle",
+                    other: "ellipse"
+                }
+            }
+        ],
+    },
+    types = [ [% FOREACH obj IN TYPES.keys.sort %]
+                        "[% obj %]",
+                [% END %] ]
+                
+
+    console.log(testData);
+                
+    window.onload=function(){
+        WB.lineageCytoscape(testData,['#ffffff','#ffffff','#ffffff','#ffffff']);
+    };
+    
+})();
+</script>

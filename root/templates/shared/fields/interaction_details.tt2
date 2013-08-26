@@ -99,6 +99,9 @@
                     }},
                 [% END %]
             ],
+            layout: {
+                name: 'arbor'
+            },
             [%# 
                 = Custom cytoscape mappers =
                 * elementType: nodes or edges
@@ -123,7 +126,7 @@
         },
         types = [ [% FOREACH obj IN TYPES.keys.sort %]
                           "[% obj %]",
-                    [% END %] ]
+                  [% END %] ]
         WB.setupCytoscape(data, types [% IF CLASSTYPE; ', "'; CLASSTYPE; '"'; END; %]);
       
     })();
