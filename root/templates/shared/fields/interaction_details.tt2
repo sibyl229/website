@@ -18,7 +18,8 @@
       <div id="cyto_legend" style="width:15em;position:absolute;right:0;z-index:1001" class="detail-box ui-corner-all">
         <p><center><h3>Legend</h3></center></p>
         [% IF TYPES.keys %]
-          <h4>Interaction types</h4>
+          
+          <h4><input type="checkbox" name="interactionToggle"> Interaction types</h4>
             [% edgeColors = ["#0A6314", "#08298A","#B40431","#FF8000", "#00E300","#05C1F0", "#8000FF", "#69088A", "#B58904", "#E02D8A", "#FFFC2E"] %]
           <p>
             [% FOREACH obj IN TYPES.keys.sort %]
@@ -39,7 +40,11 @@
         <h4>Interactor types</h4>
         <p>
             [% FOREACH obj IN NTYPES.keys.sort %]
-            <input type="checkbox" name="nodes" value="[% obj %]"> [% val = obj.replace('_', ' '); IF val == 'Text'; val = 'Other'; END; val; %] <br />
+            <input type="checkbox" name="nodes" value="[% obj %]"> [% 
+                val = obj.replace('_', ' '); 
+                IF val == 'Text'; val = 'Other'; END; 
+                val; %] 
+            <br />
             [% END %]
         </p>
         [% END %]
@@ -81,6 +86,9 @@
                         ntype: "[%  NODES.$node.class.replace('_', ' ') %]",
                         link:"[% get_url(NODES.$node.class, NODES.$node.id ,NODES.$node.taxonomy) %]",
                         predicted: [% NODES.$node.predicted %],
+                        [% IF NODES.$node.main %]
+                        mainNode: true
+                        [% END %]
                     }},
                 [% END %]
             ],
