@@ -32,8 +32,13 @@
 <br style="clear:both"/>
 
 
-<p>[% test %]</p>
+[% 
+USE Dumper;
+#Dumper.dump_html(nodes);
+#Dumper.dump_html(edges);
 
+%]
+<script src="/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript">
 (function(){
     var testData = {
@@ -62,58 +67,40 @@
   
     var data = {
         nodes: [  
-            [% FOREACH node IN NODES.keys.sort %]
+            [% FOREACH node IN nodes %]
                 { data: { 
-                    id: "[% NODES.$node.label %]", 
-                    name: "[% NODES.$node.label %]", 
-                    ntype: "[%  NODES.$node.class.replace('_', ' ') %]",
+                    id: "[% node.id %]", 
+                    name: "[% node.name ? node.name : node.id %]",
+                    size: "[% size = node.gen ? (13 - node.gen) * 30 : 30; size %]",
+                    //size: "[% node.size %]",
+                    generation: "[% node.gen %]"
                 }},
             [% END %]
         ],
         edges:[ 
-            [% FOREACH obj IN EDGES %]
+            [% FOREACH edge IN edges %]
                 { data: { 
-                id: "e[% loop.count %]", 
-                label: "[% obj.interaction.id %]" ,
-                source: "[% obj.effector.label %]", 
-                target: "[% obj.affected.label %]",
-                type: "[% obj.type %]", 
-                direction:"[% obj.direction %]",
-                width: [% obj.interactions.size %],
+                    source: "[% edge.parent_cell %]",
+                    target: "[% edge.dcell_id %]",
+                    type: "[% edge.int_type %]",
+                    embTerm: "[% edge.emb_term %]",
+                    apoptoses: "[% edge.apoptoses %]",
+                    embTermBlast: "[% edge.embTermBlast %]",
+                    width: "[% edge.width %]"
                 }},
             [% END %]
         ],
-        [%# 
-            = Custom cytoscape mappers =
-            * elementType: nodes or edges
-            * attr: some key under data[elementType][i].data
-            * mapping: obj mapping oldVal: newVal for attr
-            * (toType): new values will be put into this attr, if attr
-            *   itself shouldn't be touched
-        %]
-        mappers:[
-            {
-                elementType: 'nodes',
-                attribute: 'ntype',
-                toType: 'shape',
-                mapping: {
-                    Rearrangement: "hexagon",
-                    Gene: "octagon",
-                    Molecule: "triangle",
-                    other: "ellipse"
-                }
-            }
-        ],
-    },
-    types = [ [% FOREACH obj IN TYPES.keys.sort %]
-                        "[% obj %]",
-                [% END %] ]
-                
+        layout: {
+            name: 'breadthfirst',
+            circle: true,
+        }
+    };
+    
 
-    console.log(testData);
+    console.log(data);
                 
     window.onload=function(){
-        WB.lineageCytoscape(testData,['#ffffff','#ffffff','#ffffff','#ffffff']);
+        WB.lineageCytoscape(data);
     };
     
 })();
