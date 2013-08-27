@@ -6,6 +6,7 @@ with 'WormBase::API::Role::Object';
 #extends 'WormBase::API';
 
 use File::Spec::Functions;
+use Data::Dumper;
 
 
 =info
@@ -25,6 +26,8 @@ Cell lineage file is tab-delimited with the following format:
 
 =cut
 
+
+# file at /usr/local/wormbase/databases/WS238/lineage
 has 'cl_datadir' => (
     is => 'ro',
     lazy => 1,
@@ -38,6 +41,7 @@ has 'cl_datadir' => (
 has 'cl_filename' => (
     is => 'ro',
     lazy => 1, 
+    #default => 'test_cyto.tab'
     default => 'Cell_lineage_Cytoscape.tab'
 );
 
@@ -72,9 +76,10 @@ sub index{
             emb_term_blast
         );
         
-        #last if $limit_counter++ == 30; # DELETE
+        ++$limit_counter;
+        #last if $limit_counter == 4;#1338; # DELETE
         
-        my %row = map { shift @edge_key => $_ } split(/\t/);
+        my %row = map { shift @edge_key => $_ } split(/\t|\s\s+/);
         
         # Infer nodes
         if( defined $cells{parent_cell}){
@@ -109,8 +114,12 @@ sub index{
         $edgeMap{width} = (14 - $row{pcell_generation}) * 2;
        
         push( @edges, \%edgeMap);
+        #print "row $limit_counter:".Dumper(\%row) if $limit_counter > 1330;
+
 	}
 	
+	#$limit_counter--;
+	#print "(lineage.pm): processed ". $limit_counter ." edges\n";
 	
 	my $data = {
         nodes => [map { $cells{$_} } keys %cells],
@@ -119,9 +128,8 @@ sub index{
         test => 'asdf123'
     };
 	
-    #use Data::Dumper;
-    #print Dumper($data);
-
+	#print Dumper($data);
+	
 	return $data;
 }
 

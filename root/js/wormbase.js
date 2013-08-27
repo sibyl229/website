@@ -1876,20 +1876,29 @@ var Scrolling = (function(){
             ready: function(){
                 window.cy = this;
                 
+                
                 cy.elements('node').each(function(i, ele){
                     var gen = ele.data().generation ? ele.data().generation : 13;
                     var coeff = 15 - gen;
+                    var newSize = ele.data().size;
+                    if(gen < 5){
+                        var sizeCoeff = (5-gen);
+                        newSize = (ele.data().size * sizeCoeff)*5/8;
+                    }
                     ele.css({
-                        //'border-width': coeff,
-                        //'text-outline-width': coeff,
-                        //'font-size': ele.data().size / 2.5
-
+                        'border-width': coeff,
+                        'text-outline-width': coeff,
+                        'font-size': newSize / 2.5,
+                        'height': newSize,
+                        'width': newSize
+                        
                     });
-                });
+                }); 
+                
                 
                 cy.on('tap', 'node', function(e){
                     e.cyTarget.breadthFirstSearch(function(i, depth, e){
-                        //console.log(i, depth, e);
+                       console.log(this);
                     }, true);
                     /*
                     e.cyTarget.neighborhood('').css({

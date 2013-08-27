@@ -71,7 +71,7 @@ USE Dumper;
                 { data: { 
                     id: "[% node.id %]", 
                     name: "[% node.name ? node.name : node.id %]",
-                    size: "[% size = node.gen ? (13 - node.gen) * 30 : 30; size %]",
+                    size: "[% node.gen ? (14 - node.gen) * 30 : 30 %]",
                     //size: "[% node.size %]",
                     generation: "[% node.gen %]"
                 }},
