@@ -19,6 +19,9 @@
 
 <p>Browse the cell lineage with cytoscape</p>
 
+<h6>Click, hold for 1 second, and drag to pan<br>
+Scroll to zoon
+</h6>
 <div id="cy-container">
 
     

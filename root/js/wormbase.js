@@ -1848,6 +1848,7 @@ var Scrolling = (function(){
                     'color': 'black',
                     'text-outline-color': 'white',
                     'text-outline-width': 2,
+                    'font-weight': 'bold',
                     'height': 'data(size)',
                     'width': 'data(size)'
                 })
@@ -1883,8 +1884,10 @@ var Scrolling = (function(){
                     var newSize = ele.data().size;
                     if(gen < 5){
                         var sizeCoeff = (5-gen);
-                        newSize = (ele.data().size * sizeCoeff)*5/8;
+                        newSize = ele.data().size * (sizeCoeff*3/10 +1);
+                        console.log(newSize); // DELETE
                     }
+                    //console.log(newSize); // DELETE
                     ele.css({
                         'border-width': coeff,
                         'text-outline-width': coeff,
