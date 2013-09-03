@@ -1692,6 +1692,12 @@ var Scrolling = (function(){
                     'source-arrow-shape': 'tee',
                     'source-arrow-color': 'data(color)'
                 })
+                .selector('node[mainNode]')
+                .css({
+                    'height': '40px',
+                    'width': '40px',
+                    'background-color': 'red'
+                })
                 .selector(':selected')
                 .css({
                     'opacity': 1,
@@ -1715,6 +1721,14 @@ var Scrolling = (function(){
                 updateNodeFilter();
                 
                 legend.find('input:checkbox').click(function(){
+                    if(this.name == 'interactionToggle'){
+                        if(this.checked){
+                            resetChecked();
+                        }else{
+                            legend.find('input:checkbox[name="type"]').prop('checked',false);
+                        }
+                    }
+                    
                     updateEdgeFilter();
                     updateNodeFilter();
                 });
@@ -1786,8 +1800,17 @@ var Scrolling = (function(){
             function updateNodeFilter(){
                 cy.elements('node').show();
                 
+                // Interactor types
+                var intTypes = legend.find('input[name=nodes]:not(:checked)')
+                    .map(function(){ return this.getAttribute('value'); }).get();
+                
+                for (var i=0; i < intTypes.length; i++){
+                    var type = intTypes[i]; 
+                    cy.elements('node[^mainNode][ntype = "'+ type +'"]').hide();
+                }
+                
                 // Hide nodes with no visible edges
-                cy.elements('node').filter(function(i, ele){
+                cy.elements('node[^mainNode]').filter(function(i, ele){
                     return ele.edgesWith('').allAre(':hidden');
                 }).hide();
 

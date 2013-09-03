@@ -256,6 +256,13 @@ sub _get_interactions {
       }
     }
     $data->{showall} = scalar keys %{$data->{edgeVals}} < 100 || $nearby;
+    
+    # Annotate node for this object with main = 1.  Handled downstream.
+    foreach my $geneID (keys %{ $data->{nodes} }){
+        if ($geneID eq "$object"){
+            $data->{nodes}->{$geneID}->{main} = 1;
+        }
+    }
     return $data;
 }
 
