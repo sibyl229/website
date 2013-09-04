@@ -1689,7 +1689,6 @@ var Scrolling = (function(){
                 .css({
                     'target-arrow-shape': 'triangle',
                     'target-arrow-color': 'data(color)',
-                    'source-arrow-shape': 'tee',
                     'source-arrow-color': 'data(color)'
                 })
                 .selector('node[mainNode]')
