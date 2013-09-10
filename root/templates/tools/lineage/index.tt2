@@ -100,8 +100,6 @@ USE Dumper;
     };
     
 
-    console.log(data);
-                
     window.onload=function(){
         WB.lineageCytoscape(data);
     };

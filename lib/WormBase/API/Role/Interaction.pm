@@ -272,7 +272,8 @@ sub _get_interaction_info {
     return \%results if $self->_ignored_interactions($interaction);
     my $object = $self->object;
     my $type = $interaction->Interaction_type;
-    $type = $type->right ? $type->right . '' : "$type";
+    return {} unless defined $type;
+    $type = $type->right ? $type->right . '' : "$type" ;
     return \%results if(($type eq 'No_interaction'));
     $type =~ s/_/ /g;
     if ($type eq 'Regulatory') {

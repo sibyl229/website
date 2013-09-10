@@ -1823,35 +1823,26 @@ var Scrolling = (function(){
 	
     function lineageCytoscape(data, types, clazz){
         
-        /* Converts element attributes to their appropriate mapped values
-         * Any non-matching attributes will be matched to the "other" mapping
-         *     if exists
-            * data: data
-            * elementType: nodes or edges
-            * attr: some key under data[elementType][i].data
-            * mapping: obj mapping oldVal: newVal for attr
-            * (toType): new values will be put into this attr, if attr 
-            *   shouldn't be touched
-        */
-        function mapAttr(elementType, attr, mapping, toType){
-            for(var i=0; i < data[elementType].length; i++){
-                element = data[elementType][i]['data'][attr];
-                toType = toType ? toType : attr;
-                if( mapping[element] ){
-                    data[elementType][i]['data'][toType] = mapping[element];
-                }else if(mapping['other']){
-                    data[elementType][i]['data'][toType] = mapping['other'];
+        
+        var scope = [1,2];
+        
+        /** Returns all the nodes and edges within the generations before 
+         *and after determined by the scope, with a given node as root **/
+        /**
+        var scopedData = function scopeGraph(scopeAbove,scopeBefore,rootID){
+            var rootNode; 
+            for(var i=0; i<data.nodes.length; i++){
+                var node = data.nodes[i];
+                if(node.data.id == rootID){
+                    rootNode = node;
+                    break;
                 }
             }
-        }
-        
-        // Execute custom mappers
-        if(data.mappers)
-            for(var i=0; i < data.mappers.length; i++){
-                var m = data.mappers[i];
-                mapAttr(m.elementType, m.attribute, m.mapping, m.toType);
-            }
-        
+            console.log(rootNode); // DELETE
+            if(rootNode === undefined) 
+                return undefined;
+        }(scope[0],scope[1], 'P0');
+        **/
         
         Plugin.getPlugin('cytoscape_js',function(){
             
@@ -1870,13 +1861,13 @@ var Scrolling = (function(){
                     'color': 'black',
                     'text-outline-color': 'white',
                     'text-outline-width': 2,
-                    'font-weight': 'bold',
-                    'height': 'data(size)',
-                    'width': 'data(size)'
+                    'font-weight': 'bold'//,
+                    //'height': 'data(size)',
+                    //'width': 'data(size)'
                 })
                 .selector('edge')
                 .css({
-                    'width': 'data(width)',
+                    //'width': 'data(width)',
                     'opacity':0.7,
                     'line-color': 'data(color)',
                     'line-style': 'solid',
@@ -1898,8 +1889,11 @@ var Scrolling = (function(){
 
             ready: function(){
                 window.cy = this;
+                window.ghostCy = $jq.extend({},this);
                 
+                console.log(ghostCy);
                 
+                /**
                 cy.elements('node').each(function(i, ele){
                     var gen = ele.data().generation ? ele.data().generation : 13;
                     var coeff = 15 - gen;
@@ -1907,9 +1901,7 @@ var Scrolling = (function(){
                     if(gen < 5){
                         var sizeCoeff = (5-gen);
                         newSize = ele.data().size * (sizeCoeff*3/10 +1);
-                        console.log(newSize); // DELETE
                     }
-                    //console.log(newSize); // DELETE
                     ele.css({
                         'border-width': coeff,
                         'text-outline-width': coeff,
@@ -1919,13 +1911,20 @@ var Scrolling = (function(){
                         
                     });
                 }); 
+                **/
                 
+                focusID = 'P0';
+                
+                // Scope the data
+                // get new focused node
+                focusNode = ghostCy.elements('node[id="'+focusID+'"]');
+                console.log(focusNode);
                 
                 cy.on('tap', 'node', function(e){
+                    /*
                     e.cyTarget.breadthFirstSearch(function(i, depth, e){
                        console.log(this);
                     }, true);
-                    /*
                     e.cyTarget.neighborhood('').css({
                         'background-color': 'blue',
                         'line-color': 'blue'
