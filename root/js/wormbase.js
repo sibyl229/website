@@ -1824,25 +1824,91 @@ var Scrolling = (function(){
     function lineageCytoscape(data, types, clazz){
         
         
-        var scope = [1,2];
-        
-        /** Returns all the nodes and edges within the generations before 
-         *and after determined by the scope, with a given node as root **/
-        /**
-        var scopedData = function scopeGraph(scopeAbove,scopeBefore,rootID){
-            var rootNode; 
+        function findNode(ID){
+            var resultNode;
             for(var i=0; i<data.nodes.length; i++){
                 var node = data.nodes[i];
-                if(node.data.id == rootID){
-                    rootNode = node;
+                if(node.data.id == ID){
+                    resultNode = node;
                     break;
                 }
             }
+            return resultNode;
+        }
+        
+        /**
+            * Expands the selection by a degree of separation.  
+            * Can choose to move up or down directed graph
+            * mode: up or down
+            * elements: nodes and/or edges
+            **/
+        function expand(mode, elements){
+            var nodeIDs = {};
+            var newNodeIDs = {};
+            var newEdges = [];
+            for(var i=0; i<elements.nodes.length; i++){
+                nodeIDs[elements.nodes[i].data.id] = true;
+            }
+            
+            // get edges, node ids
+            for(var i=0; i<data.edges.length; i++){
+                var edge = data.edges[i];
+                if(mode == 'up'){
+                    if(nodeIDs[edge['data'].target] == true && 
+                        nodeIDs[edge.data.source] === undefined){
+                        newEdges.push(edge);
+                        newNodeIDs[edge.data.source] = true;
+                    }
+                }else if(mode=='down'){
+                    if(nodeIDs[edge.data.source] == true && 
+                        nodeIDs[edge.data.target] === undefined){
+                        newEdges.push(edge);
+                        newNodeIDs[edge.data.target] = true;
+                    }
+                }else{
+                    throw "mode must match 'up' or 'down'";
+                }
+            }
+            var newNodes = [];
+            for(var i=0; i<data.nodes.length; i++){
+                var node = data.nodes[i];
+                if(newNodeIDs[node.data.id] == true){
+                    newNodes.push(node);
+                }
+            }
+            
+            // got new edges and nodes, add them to element set.
+            elements.nodes = elements.nodes.concat(newNodes);
+            elements.edges = elements.edges.concat(newEdges);
+            
+            return elements;
+        }
+        
+        /** Returns all the nodes and edges within the generations before 
+         *and after determined by the scope, with a given node as root **/
+        
+        function scopeGraph(scopeAbove,scopeBelow,rootID){
+            
+            
+            var results = {};
+            var rootNode = findNode(rootID); 
             console.log(rootNode); // DELETE
             if(rootNode === undefined) 
                 return undefined;
-        }(scope[0],scope[1], 'P0');
-        **/
+            rootElement = {nodes: [rootNode], edges:[]};
+            for(var i=0; i<scopeAbove; i++){
+                var elements = expand('up',rootElement);
+            }
+            for(var i=0; i<scopeBelow; i++){
+                var elements = expand('down',rootElement);
+                
+            }
+            
+            console.log(elements);
+            return elements;
+        }
+        
+        var scopedData = scopeGraph(0, 1, 'P0');
         
         Plugin.getPlugin('cytoscape_js',function(){
             
@@ -1879,19 +1945,16 @@ var Scrolling = (function(){
                     'border-color': 'black'
                 }),
             
-            elements: {
-                nodes: data.nodes,
-                edges: data.edges
-            },
+            elements: scopedData,
             
             layout: data.layout,
             
 
             ready: function(){
                 window.cy = this;
-                window.ghostCy = $jq.extend({},this);
+                //window.ghostCy = $jq.extend({},this);
                 
-                console.log(ghostCy);
+                //console.log(ghostCy);
                 
                 /**
                 cy.elements('node').each(function(i, ele){
@@ -1917,8 +1980,7 @@ var Scrolling = (function(){
                 
                 // Scope the data
                 // get new focused node
-                focusNode = ghostCy.elements('node[id="'+focusID+'"]');
-                console.log(focusNode);
+                
                 
                 cy.on('tap', 'node', function(e){
                     /*
