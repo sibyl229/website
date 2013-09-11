@@ -1836,6 +1836,20 @@ var Scrolling = (function(){
             return resultNode;
         }
         
+        /*
+         * Merges two graph element sets of format:
+         * {
+               nodes: [ { data:{...} }... ]
+               edges: [ { data:{...} }... ]
+           }
+         */ 
+        function mergeElements(ele1, ele2){
+            var result = [];
+            result.nodes = ele1.nodes.concat(ele2.nodes);
+            result.edges = ele1.edges.concat(ele2.edges);
+            return result;
+        }
+        
         /**
             * Expands the selection by a degree of separation.  
             * Can choose to move up or down directed graph
@@ -1892,7 +1906,7 @@ var Scrolling = (function(){
             
             var results = {};
             var rootNode = findNode(rootID); 
-            console.log(rootNode); // DELETE
+            console.log({rootNode:rootNode}); // DELETE
             if(rootNode === undefined) 
                 return undefined;
             rootElement = {nodes: [rootNode], edges:[]};
@@ -1904,11 +1918,12 @@ var Scrolling = (function(){
                 
             }
             
-            console.log(elements);
+            console.log({elements: elements});
             return elements;
         }
         
-        var scopedData = scopeGraph(0, 1, 'P0');
+        var scopedData = scopeGraph(0, 2, 'P0');
+        //var scopedData = scopeGraph(1, 2, 'P1\'');
         
         Plugin.getPlugin('cytoscape_js',function(){
             
@@ -1942,56 +1957,26 @@ var Scrolling = (function(){
                 .selector(':selected')
                 .css({
                     'opacity': 1,
-                    'border-color': 'black'
+                    'border-color': 'black',
+                    'border-width': 2,
                 }),
             
             elements: scopedData,
             
-            layout: data.layout,
+            layout: {
+                name: 'breadthfirst',
+                circle: false,
+                padding: 50
+            },
             
 
             ready: function(){
                 window.cy = this;
-                //window.ghostCy = $jq.extend({},this);
-                
-                //console.log(ghostCy);
-                
-                /**
-                cy.elements('node').each(function(i, ele){
-                    var gen = ele.data().generation ? ele.data().generation : 13;
-                    var coeff = 15 - gen;
-                    var newSize = ele.data().size;
-                    if(gen < 5){
-                        var sizeCoeff = (5-gen);
-                        newSize = ele.data().size * (sizeCoeff*3/10 +1);
-                    }
-                    ele.css({
-                        'border-width': coeff,
-                        'text-outline-width': coeff,
-                        'font-size': newSize / 2.5,
-                        'height': newSize,
-                        'width': newSize
-                        
-                    });
-                }); 
-                **/
-                
-                focusID = 'P0';
-                
-                // Scope the data
-                // get new focused node
-                
                 
                 cy.on('tap', 'node', function(e){
-                    /*
-                    e.cyTarget.breadthFirstSearch(function(i, depth, e){
-                       console.log(this);
-                    }, true);
-                    e.cyTarget.neighborhood('').css({
-                        'background-color': 'blue',
-                        'line-color': 'blue'
-                    });
-                    */
+                    var newData = scopeGraph(1, 2, e.cyTarget.data().id);
+                    console.log('node clicked, new element set:',newData);
+                    cy.load(newData);
                 });
                 
                 // FOR DEBUGGING
