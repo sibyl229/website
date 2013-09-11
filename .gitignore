@@ -3,3 +3,7 @@ extlib/
 *~
 *.sav
 *.save
+
+logs/*
+xx
+
