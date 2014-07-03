@@ -30,6 +30,7 @@ use File::Spec::Functions qw(catfile catdir);
 
 has '_gene' => (
     is       => 'ro',
+    isa      => 'ArrayRef[Ace::Object]',
     required => 1,
     lazy     => 1,
     builder  => '_build__gene',
@@ -55,7 +56,7 @@ sub anatomic_expression_patterns {
         my $image = catfile($self->pre_compile->{gene_expression_path}, "$obj.jpg") if (-e $file && ! -z $file);
         push @genes , { "image" => $image };
     }
-    
+
     #my %data_pack;
 
     #my $file = catfile($self->pre_compile->{image_file_base},$self->pre_compile->{gene_expression_path}, "$object.jpg");
@@ -77,11 +78,14 @@ sub anatomic_expression_patterns {
 
 sub expression_patterns {
     my $self   = shift;
-    my @object = $self->_gene;
+    my @object = @{$self->_gene};
     my @genes;
     my @data;
+    $self->log->debug("Genes: " . join(', ', @object));
 
     foreach my $obj (@object){
+
+        $self->log->debug("OBJECT: " . $obj);
         foreach my $expr ($obj->Expr_pattern) {
             my $type = $expr->Type;
             next if $type =~ /Microarray|Tiling_array/;
@@ -90,9 +94,9 @@ sub expression_patterns {
          push @genes, {
             description => "expression patterns associated with the gene:$obj",
             data        => @data ? \@data: undef
-            }; 
+            };
     }
-    
+
     return @genes ? \@genes : undef;
 }
 
@@ -112,9 +116,9 @@ sub expression_profiling_graphs {
         push @genes, {
         description => "expression patterns associated with the gene:$obj",
         data        => @data ? \@data: undef
-        }; 
+        };
     }
-    
+
     return @genes ? \@genes : undef;
 }
 
@@ -190,7 +194,7 @@ sub anatomy_terms {
     foreach my $obj (@object){
         for my $ep ( $obj->Expr_pattern ) {
             for my $at ($ep->Anatomy_term) {
-                
+
               $unique_anatomy_terms{"$at"} ||= $self->_pack_obj($at);
             }
         }
@@ -222,7 +226,7 @@ sub expression_cluster {
             }
         }
         push @genes, @data;
-    }    
+    }
     return { data        => @genes ? \@genes : undef,
              description => 'expression cluster data' };
 }
@@ -237,7 +241,7 @@ sub fourd_expression_movies {
     my @genes;
 
     my $author;
-    foreach my $obj (@object){    
+    foreach my $obj (@object){
         my %data = map {
             my $details = $_->Pattern;
             my $url     = $_->MovieURL;
@@ -420,7 +424,7 @@ sub fpkm_expression {
                 # Reversed comparison, so that early stages appear at the top of the barchart.
                 return $label_value[1] <=> $label_value[0];
             } @fpkm_map;
-        
+
 
         my $plot;
 
@@ -460,7 +464,7 @@ sub fpkm_expression {
                 table => { fpkm => { data => \@fpkm_map } }
             };
 
-    }    
+    }
 
         return {
             description => 'Fragments Per Kilobase of transcript per Million mapped reads (FPKM) expression data',
