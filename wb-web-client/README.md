@@ -13,6 +13,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
   - [npm test](#npm-test)
   - [npm run build](#npm-run-build)
   - [npm run eject](#npm-run-eject)
+- [Supported Language Features and Polyfills](#supported-language-features-and-polyfills)
 - [Syntax Highlighting in the Editor](#syntax-highlighting-in-the-editor)
 - [Displaying Lint Output in the Editor](#displaying-lint-output-in-the-editor)
 - [Changing the Page `<title>`](#changing-the-page-title)
@@ -20,6 +21,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
 - [Importing a Component](#importing-a-component)
 - [Adding a Stylesheet](#adding-a-stylesheet)
 - [Post-Processing CSS](#post-processing-css)
+- [Adding a CSS Preprocessor (Sass, Less etc.)](#adding-a-css-preprocessor-sass-less-etc)
 - [Adding Images and Fonts](#adding-images-and-fonts)
 - [Using the `public` Folder](#using-the-public-folder)
   - [Changing the HTML](#changing-the-html)
@@ -29,6 +31,9 @@ You can find the most recent version of this guide [here](https://github.com/fac
 - [Adding Bootstrap](#adding-bootstrap)
 - [Adding Flow](#adding-flow)
 - [Adding Custom Environment Variables](#adding-custom-environment-variables)
+  - [Referencing Environment Variables in the HTML](#referencing-environment-variables-in-the-html)
+  - [Adding Temporary Environment Variables In Your Shell](#adding-temporary-environment-variables-in-your-shell)
+  - [Adding Development Environment Variables In `.env`](#adding-development-environment-variables-in-env)
 - [Can I Use Decorators?](#can-i-use-decorators)
 - [Integrating with an API Backend](#integrating-with-an-api-backend)
   - [Node](#node)
@@ -36,6 +41,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
 - [Proxying API Requests in Development](#proxying-api-requests-in-development)
 - [Using HTTPS in Development](#using-https-in-development)
 - [Generating Dynamic `<meta>` Tags on the Server](#generating-dynamic-meta-tags-on-the-server)
+- [Injecting Data from the Server into the Page](#injecting-data-from-the-server-into-the-page)
 - [Running Tests](#running-tests)
   - [Filename Conventions](#filename-conventions)
   - [Command Line Interface](#command-line-interface)
@@ -55,6 +61,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
 - [Deployment](#deployment)
   - [Serving Apps with Client-Side Routing](#serving-apps-with-client-side-routing)
   - [Building for Relative Paths](#building-for-relative-paths)
+  - [Azure](#azure)
   - [Firebase](#firebase)
   - [GitHub Pages](#github-pages)
   - [Heroku](#heroku)
@@ -165,6 +172,29 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Supported Language Features and Polyfills
+
+This project supports a superset of the latest JavaScript standard.  
+In addition to [ES6](https://github.com/lukehoban/es6features) syntax features, it also supports:
+
+* [Exponentiation Operator](https://github.com/rwaldron/exponentiation-operator) (ES2016).
+* [Async/await](https://github.com/tc39/ecmascript-asyncawait) (ES2017).
+* [Object Rest/Spread Properties](https://github.com/sebmarkbage/ecmascript-rest-spread) (stage 3 proposal).
+* [Class Fields and Static Properties](https://github.com/tc39/proposal-class-public-fields) (stage 2 proposal).
+* [JSX](https://facebook.github.io/react/docs/introducing-jsx.html) and [Flow](https://flowtype.org/) syntax.
+
+Learn more about [different proposal stages](https://babeljs.io/docs/plugins/#presets-stage-x-experimental-presets-).
+
+While we recommend to use experimental proposals with some caution, Facebook heavily uses these features in the product code, so we intend to provide [codemods](https://medium.com/@cpojer/effective-javascript-codemods-5a6686bb46fb) if any of these proposals change in the future.
+
+Note that **the project only includes a few ES6 [polyfills](https://en.wikipedia.org/wiki/Polyfill)**:
+
+* [`Object.assign()`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) via [`object-assign`](https://github.com/sindresorhus/object-assign).
+* [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) via [`promise`](https://github.com/then/promise).
+* [`fetch()`](https://developer.mozilla.org/en/docs/Web/API/Fetch_API) via [`whatwg-fetch`](https://github.com/github/fetch).
+
+If you use any other ES6+ features that need **runtime support** (such as `Array.from()` or `Symbol`), make sure you are including the appropriate polyfills manually, or that the browsers you are targeting already support them.
 
 ## Syntax Highlighting in the Editor
 
@@ -347,7 +377,60 @@ becomes this:
 }
 ```
 
-There is currently no support for preprocessors such as Less, or for sharing variables across CSS files.
+If you need to disable autoprefixing for some reason, [follow this section](https://github.com/postcss/autoprefixer#disabling).
+
+## Adding a CSS Preprocessor (Sass, Less etc.)
+
+Generally, we recommend that you don’t reuse the same CSS classes across different components. For example, instead of using a `.Button` CSS class in `<AcceptButton>` and `<RejectButton>` components, we recommend creating a `<Button>` component with its own `.Button` styles, that both `<AcceptButton>` and `<RejectButton>` can render (but [not inherit](https://facebook.github.io/react/docs/composition-vs-inheritance.html)).
+
+Following this rule often makes CSS preprocessors less useful, as features like mixins and nesting are replaced by component composition. You can, however, integrate a CSS preprocessor if you find it valuable. In this walkthrough, we will be using Sass, but you can also use Less, or another alternative.
+
+First, let’s install the command-line interface for Sass:
+
+```
+npm install node-sass --save-dev
+```
+
+Then in `package.json`, add the following lines to `scripts`:
+
+```diff
+   "scripts": {
++    "build-css": "node-sass src/ -o src/",
++    "watch-css": "npm run build-css && node-sass src/ -o src/ --watch",
+     "start": "react-scripts start",
+     "build": "react-scripts build",
+     "test": "react-scripts test --env=jsdom",
+```
+
+>Note: To use a different preprocessor, replace `build-css` and `watch-css` commands according to your preprocessor’s documentation. 
+
+Now you can rename `src/App.css` to `src/App.scss` and run `npm run watch-css`. The watcher will find every Sass file in `src` subdirectories, and create a corresponding CSS file next to it, in our case overwriting `src/App.css`. Since `src/App.js` still imports `src/App.css`, the styles become a part of your application. You can now edit `src/App.scss`, and `src/App.css` will be regenerated.
+
+At this point you might want to remove all CSS files from the source control, and add `src/**/*.css` to your `.gitignore` file. It is generally a good practice to keep the build products outside of the source control.
+
+As a final step, you may find it convenient to run `watch-css` automatically with `npm start`, and run `build-css` as a part of `npm run build`. You can use the `&&` operator to execute two scripts sequentially. However, there is no cross-platform way to run two scripts in parallel, so we will install a package for this:
+
+```
+npm install --save-dev npm-run-all
+```
+
+Then we can change `start` and `build` scripts to include the CSS preprocessor commands:
+
+```diff
+   "scripts": {
+     "build-css": "node-sass src/ -o src/",
+     "watch-css": "npm run build-css && node-sass src/ -o src/ --watch --recursive",
+-    "start": "react-scripts start",
+-    "build": "react-scripts build",
++    "start-js": "react-scripts start",
++    "start": "npm-run-all -p watch-css start-js",
++    "build": "npm run build-css && react-scripts build",
+     "test": "react-scripts test --env=jsdom",
+     "eject": "react-scripts eject"
+   }
+```
+
+Now running `npm start` and `npm run build` also builds Sass files. Note that `node-sass` seems to have an [issue recognizing newly created files on some systems](https://github.com/sass/node-sass/issues/1891) so you might need to restart the watcher when you create a file until it’s resolved.
 
 ## Adding Images and Fonts
 
@@ -518,6 +601,8 @@ Your project can consume variables declared in your environment as if they were 
 default you will have `NODE_ENV` defined for you, and any other environment variables starting with
 `REACT_APP_`.
 
+**The environment variables are embedded during the build time**. Since Create React App produces a static HTML/CSS/JS bundle, it can’t possibly read them at runtime. To read them at runtime, you would need to load HTML into memory on the server and replace placeholders in runtime, just like [described here](#injecting-data-from-the-server-into-the-page). Alternatively you can rebuild the app on the server anytime you change them.
+
 >Note: You must create custom environment variables beginning with `REACT_APP_`. Any other variables except `NODE_ENV` will be ignored to avoid accidentally [exposing a private key on the machine that could have the same name](https://github.com/facebookincubator/create-react-app/issues/865#issuecomment-252199527).
 
 These environment variables will be defined for you on `process.env`. For example, having an environment
@@ -569,6 +654,21 @@ if (process.env.NODE_ENV !== 'production') {
 The above form is looking for a variable called `REACT_APP_SECRET_CODE` from the environment. In order to consume this
 value, we need to have it defined in the environment. This can be done using two ways: either in your shell or in
 a `.env` file.
+
+### Referencing Environment Variables in the HTML
+
+>Note: this feature is available with `react-scripts@0.9.0` and higher.
+
+You can also access the environment variables starting with `REACT_APP_` in the `public/index.html`. For example:
+
+```html
+<title>%REACT_APP_WEBSITE_NAME%</title>
+```
+
+Note that the caveats from the above section apply:
+
+* Apart from a few built-in variables (`NODE_ENV` and `PUBLIC_URL`), variable names must start with `REACT_APP_` to work.
+* The environment variables are injected at build time. If you need to inject them at runtime, [follow this approach instead](#generating-dynamic-meta-tags-on-the-server).
 
 ### Adding Temporary Environment Variables In Your Shell
 
@@ -705,13 +805,28 @@ Since Create React App doesn’t support server rendering, you might be wonderin
 <!doctype html>
 <html lang="en">
   <head>
-    <meta property="og:title" content="%OG_TITLE%">
-    <meta property="og:description" content="%OG_DESCRIPTION%">
+    <meta property="og:title" content="__OG_TITLE__">
+    <meta property="og:description" content="__OG_DESCRIPTION__">
 ```
 
-Then, on the server, regardless of the backend you use, you can read `index.html` into memory and replace `%OG_TITLE%`, `%OG_DESCRIPTION%`, and any other placeholders with values depending on the current URL. Just make sure to sanitize and escape the interpolated values so that they are safe to embed into HTML!
+Then, on the server, regardless of the backend you use, you can read `index.html` into memory and replace `__OG_TITLE__`, `__OG_DESCRIPTION__`, and any other placeholders with values depending on the current URL. Just make sure to sanitize and escape the interpolated values so that they are safe to embed into HTML!
 
 If you use a Node server, you can even share the route matching logic between the client and the server. However duplicating it also works fine in simple cases.
+
+## Injecting Data from the Server into the Page
+
+Similarly to the previous section, you can leave some placeholders in the HTML that inject global variables, for example:
+
+```js
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      window.SERVER_DATA = __SERVER_DATA__;
+    </script>
+```
+
+Then, on the server, you can replace `__SERVER_DATA__` with a JSON of real data right before sending the response. The client code can then read `window.SERVER_DATA` to use it. **Make sure to [sanitize the JSON before sending it to the client](https://medium.com/node-security/the-most-common-xss-vulnerability-in-react-js-applications-2bdffbcc1fa0) as it makes your app vulnerable to XSS attacks.**
 
 ## Running Tests
 
@@ -769,8 +884,8 @@ it('sums numbers', () => {
 });
 ```
 
-All `expect()` matchers supported by Jest are [extensively documented here](http://facebook.github.io/jest/docs/api.html#expect-value).<br>
-You can also use [`jest.fn()` and `expect(fn).toBeCalled()`](http://facebook.github.io/jest/docs/api.html#tobecalled) to create “spies” or mock functions.
+All `expect()` matchers supported by Jest are [extensively documented here](http://facebook.github.io/jest/docs/expect.html).<br>
+You can also use [`jest.fn()` and `expect(fn).toBeCalled()`](http://facebook.github.io/jest/docs/expect.html#tohavebeencalled) to create “spies” or mock functions.
 
 ### Testing Components
 
@@ -828,8 +943,26 @@ it('renders welcome message', () => {
 });
 ```
 
-All Jest matchers are [extensively documented here](http://facebook.github.io/jest/docs/api.html#expect-value).<br>
+All Jest matchers are [extensively documented here](http://facebook.github.io/jest/docs/expect.html).<br>
 Nevertheless you can use a third-party assertion library like [Chai](http://chaijs.com/) if you want to, as described below.
+
+Additionally, you might find [jest-enzyme](https://github.com/blainekasten/enzyme-matchers) helpful to simplify your tests with readable matchers. The above `contains` code can be written simpler with jest-enzyme.
+
+```js
+expect(wrapper).toContainReact(welcome)
+```
+
+To setup jest-enzyme with Create React App, follow the instructions for [initializing your test environment](#initializing-test-environment) to import `jest-enzyme`.
+
+```sh
+npm install --save-dev jest-enzyme
+```
+
+```js
+// src/setupTests.js
+import 'jest-enzyme';
+```
+
 
 ### Using Third Party Assertion Libraries
 
@@ -1082,6 +1215,10 @@ If you are not using the HTML5 `pushState` history API or not using client-side 
 ```
 
 This will make sure that all the asset paths are relative to `index.html`. You will then be able to move your app from `http://mywebsite.com` to `http://mywebsite.com/relativepath` or even `http://mywebsite.com/relative/path` without having to rebuild it.
+
+### Azure
+
+See [this](https://medium.com/@to_pe/deploying-create-react-app-on-microsoft-azure-c0f6686a4321) blog post on how to deploy your React app to [Microsoft Azure](https://azure.microsoft.com/).
 
 ### Firebase
 
