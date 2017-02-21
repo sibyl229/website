@@ -14,9 +14,15 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <% for (key in htmlWebpackPlugin.files.css) { %>
+    <link href="%PUBLIC_URL%<%= htmlWebpackPlugin.files.css[key] %>" rel="stylesheet">
+    <% } %>
   </head>
   <body>
     <div id="root"></div>
+    <% for (key in htmlWebpackPlugin.files.chunks) { %>
+    <script src="%PUBLIC_URL%<%= htmlWebpackPlugin.files.chunks[key].entry %>" type="text/javascript"></script>
+    <% } %>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
