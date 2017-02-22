@@ -18,7 +18,8 @@
  * author: Abigail Cabunoc
  *         abigail.cabunoc@oicr.on.ca
  */
-var jQuery = require('jquery');
+import jQuery from 'jquery';
+import { importLazy } from './components/LazilyLoad';
 
 +function(window, document, undefined){
   var location = window.location,
