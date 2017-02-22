@@ -72,7 +72,7 @@ module.exports = {
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    modules: ['node_modules'].concat(paths.nodePaths),
+    modules: ['node_modules'].concat(paths.nodePaths).concat([paths.appSrcLegacy]),
     // These are the reasonable defaults supported by the Node ecosystem.
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
@@ -84,7 +84,7 @@ module.exports = {
       'react-native': 'react-native-web'
     }
   },
-  
+
   module: {
     rules: [
       // Disable require.ensure as it's not a standard language feature.
@@ -95,10 +95,11 @@ module.exports = {
         test: /\.(js|jsx)$/,
         enforce: 'pre',
         use: [{
-          
+
           loader: 'eslint-loader'
         }],
-        include: paths.appSrc
+        include: paths.appSrc,
+        exclude: paths.appSrcLegacy
       },
       // ** ADDING/UPDATING LOADERS **
       // The "url" loader handles all assets unless explicitly excluded.
@@ -126,8 +127,13 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
-        loader: 'babel-loader',
-        
+        exclude: paths.appSrcLegacy,
+        loader: 'babel-loader'
+      },
+      {
+        test: /\.js$/,
+        include: paths.appSrcLegacy,
+        use: ['script-loader']
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
@@ -246,5 +252,8 @@ module.exports = {
     fs: 'empty',
     net: 'empty',
     tls: 'empty'
+  },
+  externals: {
+    jquery: 'jQuery'
   }
 };
