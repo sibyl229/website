@@ -3,9 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import './legacy/css/jquery-ui.min.css';
 import './legacy/css/main.css';
-// import './legacy/js/jquery-1.9.1.min.js';
-// import './legacy/js/jquery-ui-1.10.1.custom.min.js';
-import './legacy/js/wormbase.js';
+import './wormbase.js';
 
 class App extends Component {
   render() {
