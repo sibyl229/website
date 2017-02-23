@@ -1,12 +1,12 @@
-import { importLazy } from './components/LazilyLoad';
+import { importLazy } from '../components/LazilyLoad';
 import jQuery from 'jquery';
 const $jq = jQuery.noConflict();
 
 // summary plot using selected modENCODE experiments
 function makeFpkmSummaryPlot(container, experiments, data){
-  const HighchartsPromise = importLazy(import('./legacy/js/highcharts/4.1.9/highcharts.js'), {globalName: 'Highcharts'})
-    .then(() => importLazy(import('./legacy/js/highcharts/4.1.9/highcharts-more.js'), {globalName: 'Highcharts'}));
-  const ssPromise = importLazy(import('./legacy/js/simple-statistics/1.0.1/simple_statistics.min.js'), {globalName: 'ss'});
+  const HighchartsPromise = importLazy(import('../../legacy_modules/js/highcharts/4.1.9/highcharts.js'), {globalName: 'Highcharts'})
+    .then(() => importLazy(import('../../legacy_modules/js/highcharts/4.1.9/highcharts-more.js'), {globalName: 'Highcharts'}));
+  const ssPromise = importLazy(import('../../legacy_modules/js/simple-statistics/1.0.1/simple_statistics.min.js'), {globalName: 'ss'});
 
   Promise.all([HighchartsPromise, ssPromise]).then(([Highcharts, ss]) => {
 
@@ -358,9 +358,9 @@ function makeFpkmSummaryPlot(container, experiments, data){
 
 // box plot for each project
 function makeFpkmBoxPlot(container, projects, data){
-  const HighchartsPromise = importLazy(import('./legacy/js/highcharts/4.1.9/highcharts.js'), {globalName: 'Highcharts'})
-    .then(() => importLazy(import('./legacy/js/highcharts/4.1.9/highcharts-more.js'), {globalName: 'Highcharts'}));
-  const ssPromise = importLazy(import('./legacy/js/simple-statistics/1.0.1/simple_statistics.min.js'), {globalName: 'ss'});
+  const HighchartsPromise = importLazy(import('../../legacy_modules/js/highcharts/4.1.9/highcharts.js'), {globalName: 'Highcharts'})
+    .then(() => importLazy(import('../../legacy_modules/js/highcharts/4.1.9/highcharts-more.js'), {globalName: 'Highcharts'}));
+  const ssPromise = importLazy(import('../../legacy_modules/js/simple-statistics/1.0.1/simple_statistics.min.js'), {globalName: 'ss'});
 
   Promise.all([HighchartsPromise, ssPromise]).then(([Highcharts, ss]) => {
 

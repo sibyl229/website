@@ -540,7 +540,7 @@ table li {
 div#splash-box{
   margin:0 -0.6em;
   position:relative;
-  background-image:url('../img/home.jpg');
+  background-image:url('./img/home.jpg');
   background-repeat:no-repeat;
   padding:35px;
   padding-left:2.5em;
@@ -550,11 +550,11 @@ div#splash-box{
 }
 
 div#splash-box.tutorial{
-  background-image:url('../img/home-fade.jpg');
+  background-image:url('./img/home-fade.jpg');
 }
 
 div#tutorial-left{
-  background-image:url('../img/tutorial.png');
+  background-image:url('./img/tutorial.png');
   background-repeat:no-repeat;
   background-position: -235px 0;
   width:695px;
@@ -566,7 +566,7 @@ div#tutorial-left{
 }
 
 div#tutorial-right{
-  background-image:url('../img/tutorial.png');
+  background-image:url('./img/tutorial.png');
   background-repeat:no-repeat;
   position:absolute;
   right:0;
@@ -578,12 +578,12 @@ div#tutorial-right{
 }
 
 #skip-tutorial:hover{
-  background:url('../img/home-arrow.png') no-repeat 110px 5px;
+  background:url('./img/home-arrow.png') no-repeat 110px 5px;
 }
 
 @media screen and (max-width: 991px) {
   div#tutorial-left{
-    background-image:url('../img/tutorial-narrow.png');
+    background-image:url('./img/tutorial-narrow.png');
     left:40px;
   }
 
@@ -594,7 +594,7 @@ div#tutorial-right{
 
 @media screen and (max-width: 767px) {
   div#tutorial-left{
-    background-image:url('../img/tutorial-narrow.png');
+    background-image:url('./img/tutorial-narrow.png');
     left:20px;
   }
 
@@ -614,7 +614,7 @@ div.star-tutorial{
 }
 
 div.star-tutorial:hover, .star-selected{
-  background-image:url('../img/home-yellow.png');
+  background-image:url('./img/home-yellow.png');
 }
 
 div#splash-box>p{
@@ -1092,7 +1092,7 @@ a#fade:hover, a.fade:hover {
   /* display:none; previously used for hide button until texts are entered */
 }
 
-.ui-autocomplete-loading { background: white url(../img/ajax-loader.gif) center no-repeat; }
+.ui-autocomplete-loading { background: white url(./img/ajax-loader.gif) center no-repeat; }
 
 
 /* Icons
@@ -1100,7 +1100,7 @@ a#fade:hover, a.fade:hover {
 
 
 /*/* states and images */
-.ui-icon-large { width: 20px; height: 20px; background-image: url(../img/new-icons.png);}
+.ui-icon-large { width: 20px; height: 20px; background-image: url(./img/new-icons.png);}
 
 /* positioning */
 .ui-icon-triangle-1-w.ui-icon-large { background-position: -200px 0px; }
@@ -1112,11 +1112,11 @@ a#fade:hover, a.fade:hover {
 .ui-icon-circle-triangle-s.ui-icon-large { background-position: -60px 0px; }
 .ui-icon-gear.ui-icon-large { background-position: -200px -60px; }
 
-.ui-icon-column { width: 16px; height: 16px; background-image: url(../img/columns.png);}
-.ui-icon-pdf {width: 16px; height: 16px; margin-top:0.1em; cursor:pointer; float:right; background-image: url(../img/pdf-icon.png); }
-.ui-icon-pubmed { width: 40px; height: 17px; cursor:pointer;  background-image : url(../img/buttons/pubmed.gif); }
+.ui-icon-column { width: 16px; height: 16px; background-image: url(./img/columns.png);}
+.ui-icon-pdf {width: 16px; height: 16px; margin-top:0.1em; cursor:pointer; float:right; background-image: url(./img/pdf-icon.png); }
+.ui-icon-pubmed { width: 40px; height: 17px; cursor:pointer;  background-image : url(./img/buttons/pubmed.gif); }
 
-.ui-icon-dna {background-image: url(../img/new-icons.png); background-position: -204px -21px}
+.ui-icon-dna {background-image: url(./img/new-icons.png); background-position: -204px -21px}
 
 .ui-icon-1 { background-position: 0px 0px; }
 .ui-icon-1-1 { background-position: -16px 0px; }
@@ -1124,7 +1124,7 @@ a#fade:hover, a.fade:hover {
 .ui-icon-1-2 { background-position: -48px 0px; }
 
 .ui-icon-stars { width: 20px; height: 20px;
-background-image: url(../img/new-icons.png) !important;
+background-image: url(./img/new-icons.png) !important;
 cursor:pointer;}
 .ui-icon-star-gray  {  background-position: -120px 0px; }
 .result:hover .ui-icon-star-gray, .ui-icon-star-gray:hover  {   background-position: -160px 0px; }
@@ -1586,7 +1586,7 @@ ul.nav-bar.parasite-menu > li {
 ul.nav-bar.parasite-menu > li a {
   text-indent: -5000px;
   overflow: none;
-  background-image: url(/img/logo-parasite.png);
+  background-image: url(./img/logo-parasite.png);
   background-repeat:no-repeat;
   background-position: center 10px;
   width:76px;
@@ -1768,7 +1768,7 @@ li#section-community .submenu {
 
 .wb-ext {
   padding-right: 19px;
-  background-image: url(../img/icon-new-win.png);
+  background-image: url(./img/icon-new-win.png);
   background-repeat: no-repeat;
   background-position: right center;
 }
@@ -1776,28 +1776,28 @@ li#section-community .submenu {
 /* Title region: Custom icon for specific sections */
 #section-directory .submenu .submenu-title {
   padding-left: 58px;
-  background-image: url(../img/icon-open-book.png);
+  background-image: url(./img/icon-open-book.png);
   background-repeat: no-repeat;
   background-position: left top;
 }
 
 #section-tools .submenu .submenu-title {
   padding-left: 58px;
-  background-image: url(../img/icon-map.png);
+  background-image: url(./img/icon-map.png);
   background-repeat: no-repeat;
   background-position: left top;
 }
 
 #section-downloads .submenu .submenu-title {
   padding-left: 58px;
-  background-image: url(../img/icon-download.png);
+  background-image: url(./img/icon-download.png);
   background-repeat: no-repeat;
   background-position: left top;
 }
 
 #section-community .submenu .submenu-title {
   padding-left: 58px;
-  background-image: url(../img/icon-team.png);
+  background-image: url(./img/icon-team.png);
   background-repeat: no-repeat;
   background-position: left top;
 }
@@ -2027,26 +2027,26 @@ ul.nav-bar li .submenu {
 }
 .submenu-sub .wb-more ul li {
   list-style-image: none;
-  background-image: url(../img/bullet-arrow.png);
+  background-image: url(./img/bullet-arrow.png);
   background-repeat: no-repeat;
   background-position: left top;
   padding-left: 23px;
 }
 
 .submenu-sub .wb-more ul li.more-file {
-  background-image: url(../img/bullet-file.png);
+  background-image: url(./img/bullet-file.png);
 }
 
 .submenu-sub .wb-more ul li.more-tool {
-  background-image: url(../img/bullet-wrench.png);
+  background-image: url(./img/bullet-wrench.png);
 }
 
 .submenu-sub .wb-more ul li.more-twitter {
-  background-image: url(../img/bullet-twitter.png);
+  background-image: url(./img/bullet-twitter.png);
 }
 
 .submenu-sub .wb-more ul li.more-github {
-  background-image: url(../img/bullet-github.png);
+  background-image: url(./img/bullet-github.png);
 }
 
 .submenu-sub .more-file {
@@ -2386,7 +2386,7 @@ div#footercredit a{
 }
 
 .social-icons {
-  background-image:url('../img/new-icons.png');
+  background-image:url('./img/new-icons.png');
   height:30px;
   width:30px;
   background-position:0px 0px;
@@ -3023,7 +3023,7 @@ table#table_fpkm_controls_by td:nth-child(3) {
 }
 
 /* Ajax loading animations */
-#loadingDiv { background: url(../img/ajax-loader.gif) no-repeat center; }
+#loadingDiv { background: url(./img/ajax-loader.gif) no-repeat center; }
 
 .tooltip {
   margin-left: 7px;
@@ -4011,7 +4011,7 @@ Use width:auto or a fixed width on the .social_buttons element
 
 /*Social icons sprite file*/
 .social_buttons > span:before {
-    background: url(../img/social_buttons_icons.png) no-repeat;
+    background: url(./img/social_buttons_icons.png) no-repeat;
 }
 
 

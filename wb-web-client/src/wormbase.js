@@ -19,7 +19,7 @@
  *         abigail.cabunoc@oicr.on.ca
  */
 import jQuery from 'jquery';
-import FpkmPlots from './fpkm';
+import FpkmPlots from './visualizations/fpkm';
 
 
 +function(window, document, undefined){
