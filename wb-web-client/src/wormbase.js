@@ -19,7 +19,8 @@
  *         abigail.cabunoc@oicr.on.ca
  */
 import jQuery from 'jquery';
-import { importLazy } from './components/LazilyLoad';
+import FpkmPlots from './fpkm';
+
 
 +function(window, document, undefined){
   var location = window.location,
@@ -2223,7 +2224,7 @@ var Scrolling = (function(){
       // setupCytoscapePersonLineage: setupCytoscapePersonLineage,       // setup cytoscape for use by PersonLineage
       // setupCytoscapeInteraction: setupCytoscapeInteraction,           // setup cytoscape for use by Interaction
       // setupCytoscapePhenGraph: setupCytoscapePhenGraph,               // setup cytoscape for use by Phenotype Graph
-      // FpkmPlots: FpkmPlots,                         // fpkm by life stage plots
+      FpkmPlots: FpkmPlots,                         // fpkm by life stage plots
       reloadWidget: reloadWidget,                   // reload a widget
       multiViewInit: multiViewInit,                 // toggle between summary/full view table
       partitioned_table: partitioned_table,         // augment to a datatable setting, when table rows are partitioned by certain attributes

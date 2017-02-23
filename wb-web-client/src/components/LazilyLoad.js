@@ -60,8 +60,14 @@ export const LazilyLoadFactory = (Component, modules) => {
   );
 };
 
-export const importLazy = (promise) => (
-  promise.then((result) => result.default)
+export const importLazy = (promise, {globalName}={}) => (
+  promise.then((result) => {
+    if (result && result.default) {
+      return result.default;
+    } else if (window && globalName) {
+      return window[globalName];
+    }
+  })
 );
 
 export default LazilyLoad;
