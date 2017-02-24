@@ -3,14 +3,13 @@
 [%# This phenotype processing diverges from the standard processing ... %]
 [%# See also Varation.pm for alternative data processing/structure... %]
 
-<script src="/js/jquery/plugins/cytoscapejs/dagre/0.7.4/dagre.min.js "></script>
 
 <script type="text/javascript">
 $jq(function(){
 
 // old way with json and fake widget phenotype_graph_json
 //   var graphP = $jq.ajax({
-//     url: 'http://juancarlos.wormbase.org/rest/widget/gene/[% fields.phenotype_graph.data %]/phenotype_graph_json', 
+//     url: 'http://juancarlos.wormbase.org/rest/widget/gene/[% fields.phenotype_graph.data %]/phenotype_graph_json',
 //     type: 'GET',
 //     dataType: 'json'
 //   });

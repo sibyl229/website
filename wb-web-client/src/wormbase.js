@@ -24,9 +24,8 @@ import FpkmPlots from './visualizations/fpkm';
 import {
   setupCytoscapePersonLineage,
   setupCytoscapeInteraction,
-  // setupCytoscapePhenGraph,
+  setupCytoscapePhenGraph,
 } from './visualizations/graphs';
-import './visualizations/graphs';
 
 
 +function(window, document, undefined){
@@ -2032,7 +2031,7 @@ var Scrolling = (function(){
       recordOutboundLink: recordOutboundLink,       // record external links
       setupCytoscapePersonLineage: setupCytoscapePersonLineage,       // setup cytoscape for use by PersonLineage
       setupCytoscapeInteraction: setupCytoscapeInteraction,           // setup cytoscape for use by Interaction
-      // setupCytoscapePhenGraph: setupCytoscapePhenGraph,               // setup cytoscape for use by Phenotype Graph
+      setupCytoscapePhenGraph: setupCytoscapePhenGraph,               // setup cytoscape for use by Phenotype Graph
       FpkmPlots: FpkmPlots,                         // fpkm by life stage plots
       reloadWidget: reloadWidget,                   // reload a widget
       multiViewInit: multiViewInit,                 // toggle between summary/full view table
