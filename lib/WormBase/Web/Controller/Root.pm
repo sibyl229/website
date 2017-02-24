@@ -120,10 +120,9 @@ sub footer :Path("/footer") Args(0) {
 }
 
 # everything processed by webpack
-sub static :LocalRegex('^\d*\.?static\/.+') {
+sub static :LocalRegex('^(\d+\.)?static\/.+') {
     my ($self,$c,@path_parts) = @_;
     my $path = $c->request->path;
-
     my $dev_server_url = $c->config->{webpack_dev_server};
     if ($dev_server_url && LWP::Simple::head($dev_server_url)) {
         $c->response->redirect("$dev_server_url/$path");
@@ -138,6 +137,26 @@ sub static_bypass :LocalRegex('^static-bypass\/.+') {
   my ($self,$c,@path_parts) = @_;
   my $path = $c->request->path;
   $c->serve_static_file("wb-web-client/build/$path");
+}
+
+sub sockjs :Path("/sockjs-node") Args {
+  # used to refresh page when webpack bundle changes
+  my ($self,$c) = @_;
+  my $dev_server_url = $c->config->{webpack_dev_server};
+  my $path = $c->request->path;
+  if ($dev_server_url && LWP::Simple::head($dev_server_url)) {
+      $c->response->redirect("$dev_server_url/$path");
+  }
+}
+
+sub hot_update_json :LocalRegex('^.*\.hot-update\.js(on)?$') {
+    my ($self,$c,@path_parts) = @_;
+    my $path = $c->request->path;
+
+    my $dev_server_url = $c->config->{webpack_dev_server};
+    if ($dev_server_url && LWP::Simple::head($dev_server_url)) {
+        $c->response->redirect("$dev_server_url/$path");
+    }
 }
 
 sub me :Path("/me") Args(0) {
@@ -212,7 +231,7 @@ sub end : ActionClass('RenderView') {
   if($path =~ /\.html/){
       $c->serve_static_file($c->path_to("root/static/$path"));
   }
-  elsif (!($path =~ /cgi-?bin/i || $c->action->name eq 'draw' || $path =~ /\.(png|js|css)/)) {
+  elsif (!($path =~ /cgi-?bin/i || $c->action->name eq 'draw' || $path =~ /\.(png|svg|js|css|json)/ || $path =~ /^sockjs-node/)) {
 
       # when webpack dev server is used, save the index.html as a tt2 template
       my $dev_server_url = $c->config->{webpack_dev_server};
