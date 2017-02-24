@@ -34,7 +34,7 @@ LegacyPlugin.lookup = {
     import("../legacy_modules/js/jquery/plugins/tabletools/media/css/TableTools.css")
   ])),
   placeholder: () => importLazy(import("../legacy_modules/js/jquery/plugins/jquery.placeholder.min.js")),
-  cytoscape_js: () => importLazy(import("../legacy_modules/js/jquery/plugins/cytoscapejs/cytoscape_min/2.5.0/cytoscape.min.js")),
+  cytoscape_js: () => importLazy(import("../legacy_modules/js/jquery/plugins/cytoscapejs/cytoscape_min/2.5.0/cytoscape.min.js"), {globalName: 'cytoscape'}),
   cytoscape_js_arbor: () => importLazy(import("../legacy_modules/js/jquery/plugins/cytoscapejs/cytoscape_arbor/1.1.2/cytoscape-arbor.js")),
   cytoscape_js_dagre: () => importLazy(import("../legacy_modules/js/jquery/plugins/cytoscapejs/cytoscape_dagre/1.1.2/cytoscape-dagre.js")),
   qtip: () => importLazy(Promise.all([
