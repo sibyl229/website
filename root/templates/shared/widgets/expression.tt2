@@ -110,7 +110,5 @@ END;
 
 
 <script type="text/javascript" >
-    setTimeout(function(){  // sorry, need time to load summary fpkm plot first
-        WB.openField($jq("#fpkm_holder"), "[% '/rest/field/' _ class _ '/' _ fields.name.data.id _ '/fpkm_expression_summary_ls' %]", {noLoadImg: true});
-    }, 1000);
+  WB.openField($jq("#fpkm_holder"), "[% '/rest/field/' _ class _ '/' _ fields.name.data.id _ '/fpkm_expression_summary_ls' %]", {noLoadImg: true});
 </script>
