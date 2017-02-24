@@ -19,7 +19,7 @@ var getProcessForPort = require('react-dev-utils/getProcessForPort');
 var openBrowser = require('react-dev-utils/openBrowser');
 var prompt = require('react-dev-utils/prompt');
 var fs = require('fs');
-var config = require('../config/webpack.config.dev');
+// var config = require('../config/webpack.config.dev');
 var paths = require('../config/paths');
 
 var useYarn = fs.existsSync(paths.yarnLockFile);
@@ -49,7 +49,7 @@ if (isSmokeTest) {
   };
 }
 
-function setupCompiler(host, port, protocol) {
+function setupCompiler(config, host, port, protocol) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
   compiler = webpack(config, handleCompile);
@@ -216,7 +216,7 @@ function addMiddleware(devServer) {
   devServer.use(devServer.middleware);
 }
 
-function runDevServer(host, port, protocol) {
+function runDevServer(config, host, port, protocol) {
   var devServer = new WebpackDevServer(compiler, {
     // Enable gzip compression of generated files.
     compress: true,
@@ -285,8 +285,15 @@ function runDevServer(host, port, protocol) {
 function run(port) {
   var protocol = process.env.HTTPS === 'true' ? "https" : "http";
   var host = process.env.HOST || 'localhost';
-  setupCompiler(host, port, protocol);
-  runDevServer(host, port, protocol);
+
+  // update envs, so config is generated with new envs
+  process.env.HOST = host;
+  process.env.PORT = port;
+  delete require.cache[require.resolve('../config/webpack.config.dev')];
+  var config = require('../config/webpack.config.dev');
+
+  setupCompiler(config, host, port, protocol);
+  runDevServer(config, host, port, protocol);
 }
 
 // We attempt to use the default port but if it is busy, we offer the user to
