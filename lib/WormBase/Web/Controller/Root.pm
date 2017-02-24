@@ -132,6 +132,14 @@ sub static :LocalRegex('^\d*\.?static\/.+') {
     }
 }
 
+sub static_bypass :LocalRegex('^static-bypass\/.+') {
+  # static assets that bypass webpack, because webpack would break them
+  # ie, arbor.js
+  my ($self,$c,@path_parts) = @_;
+  my $path = $c->request->path;
+  $c->serve_static_file("wb-web-client/build/$path");
+}
+
 sub me :Path("/me") Args(0) {
     my ( $self, $c ) = @_;
     $c->stash->{'section'} = 'me';

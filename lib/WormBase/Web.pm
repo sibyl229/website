@@ -493,6 +493,7 @@ sub _setup_static {
             '/usr/local/wormbase/shared/tmp',
             '/usr/local/wormbase/website-admin/html',
             'wb-web-client/build/static',
+            'wb-web-client/build/static-bypass',
             __PACKAGE__->config->{root},
             __PACKAGE__->config->{shared_html_base},
 	    ],

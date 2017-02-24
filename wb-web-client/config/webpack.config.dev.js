@@ -260,6 +260,7 @@ module.exports = {
     hints: false
   },
   externals: {
-    jquery: 'jQuery'
+    jquery: 'jQuery',
+    arbor: 'arbor'
   }
 };

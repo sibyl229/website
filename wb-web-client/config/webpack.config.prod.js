@@ -254,6 +254,7 @@ module.exports = {
     tls: 'empty'
   },
   externals: {
-    jquery: 'jQuery'
+    jquery: 'jQuery',
+    arbor: 'arbor'
   }
 };
