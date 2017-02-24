@@ -23,7 +23,7 @@ import { LegacyPlugin as Plugin } from './utils';
 import FpkmPlots from './visualizations/fpkm';
 import {
   setupCytoscapePersonLineage,
-  // setupCytoscapeInteraction,
+  setupCytoscapeInteraction,
   // setupCytoscapePhenGraph,
 } from './visualizations/graphs';
 import './visualizations/graphs';
@@ -2031,7 +2031,7 @@ var Scrolling = (function(){
       validate_fields: validate_fields,             // validate form fields
       recordOutboundLink: recordOutboundLink,       // record external links
       setupCytoscapePersonLineage: setupCytoscapePersonLineage,       // setup cytoscape for use by PersonLineage
-      // setupCytoscapeInteraction: setupCytoscapeInteraction,           // setup cytoscape for use by Interaction
+      setupCytoscapeInteraction: setupCytoscapeInteraction,           // setup cytoscape for use by Interaction
       // setupCytoscapePhenGraph: setupCytoscapePhenGraph,               // setup cytoscape for use by Phenotype Graph
       FpkmPlots: FpkmPlots,                         // fpkm by life stage plots
       reloadWidget: reloadWidget,                   // reload a widget
