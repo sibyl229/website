@@ -127,7 +127,7 @@ sub static :LocalRegex('^(\d+\.)?static\/.+') {
     if ($dev_server_url && LWP::Simple::head($dev_server_url)) {
         $c->response->redirect("$dev_server_url/$path");
     } else {
-        $c->serve_static_file("wb-web-client/build/$path");
+        $c->serve_static_file("client/build/$path");
     }
 }
 
@@ -136,7 +136,7 @@ sub static_bypass :LocalRegex('^static-bypass\/.+') {
   # ie, arbor.js
   my ($self,$c,@path_parts) = @_;
   my $path = $c->request->path;
-  $c->serve_static_file("wb-web-client/build/$path");
+  $c->serve_static_file("client/build/$path");
 }
 
 sub sockjs :Path("/sockjs-node") Args {

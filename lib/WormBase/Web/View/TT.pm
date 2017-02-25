@@ -12,7 +12,7 @@ $Template::Stash::ROOT_OPS->{ ref } = sub {
 
 __PACKAGE__->config({
              INCLUDE_PATH => [
-                 WormBase::Web->path_to( 'wb-web-client', 'build'),
+                 WormBase::Web->path_to( 'client', 'build'),
                  WormBase::Web->path_to( 'root', 'templates' ),
                  WormBase::Web->path_to( 'root', 'templates' , 'config'),
              ],
