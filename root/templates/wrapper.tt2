@@ -22,7 +22,7 @@
          END;
      ELSE;
          IF is_classic;
-              content WRAPPER index.html;
+              content WRAPPER index.html;  # in /wb-web-client/build/
          ELSE;
               content WRAPPER index.html + layout/default.tt2;
          END;
