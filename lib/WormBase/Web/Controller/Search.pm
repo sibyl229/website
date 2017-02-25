@@ -103,7 +103,7 @@ sub search :Path('/search') Args {
       $c->stash->{page} = $page_count;
       $c->stash->{type} = $type;
       $c->stash->{query} = $query  || "*";
-      $c->forward('WormBase::Web::View::TT');
+      $c->forward('Root', 'end');
       return;
     }
 
@@ -125,7 +125,7 @@ sub search :Path('/search') Args {
     $c->stash->{count_estimate} = $self->_fuzzy_estimate($count);
 
     if ( $content_type eq 'text/html' ) {
-      $c->forward('WormBase::Web::View::TT');
+      $c->forward('Root', 'end');
       return;
     }
 
@@ -227,7 +227,7 @@ sub search_git :Path('/search/issue') :Args(2) {
 
 
     if ( $content_type eq 'text/html' ) {
-      $c->forward('WormBase::Web::View::TT');
+      $c->forward('Root', 'end');
       return;
     }
 
