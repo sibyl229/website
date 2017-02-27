@@ -155,7 +155,8 @@ module.exports = {
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 1
+                importLoaders: 1,
+                minimize: true
               }
             }, {
               loader: 'postcss-loader',
