@@ -191,23 +191,27 @@ sub end : ActionClass('RenderView') {
       $c->serve_static_file($c->path_to("root/static/$path"));
   }
   elsif (!($path =~ /cgi-?bin/i || $c->action->name eq 'draw' || $path =~ /\.(png|jpg|svg|js|css|json)/)) {
-
-      # when webpack dev server is used, save the index.html as a tt2 template
-      my $dev_server_url = $c->config->{webpack_dev_server};
-      if ($dev_server_url && (my $dev_template = LWP::Simple::get($dev_server_url))) {
-          my $template_filepath = $c->path_to("root/templates/boilerplate/dev_html");
-          open(my $fh, ">", $template_filepath)
-              or die "Can't open > $template_filepath $!";
-          print $fh $dev_template;
-          close $fh;
-          $c->stash->{use_dev_template} = 1;
-      }
-
-      $c->forward('WormBase::Web::View::TT');
+    $c->forward('call_render');
   }
 }
 
+sub call_render : Private {
+  my ($self,$c) = @_;
 
+  # choose the base template
+  # when webpack dev server is used, save the index.html as a tt2 template
+  my $dev_server_url = $c->config->{webpack_dev_server};
+  if ($dev_server_url && (my $dev_template = LWP::Simple::get($dev_server_url))) {
+      my $template_filepath = $c->path_to("root/templates/boilerplate/dev_html");
+      open(my $fh, ">", $template_filepath)
+          or die "Can't open > $template_filepath $!";
+      print $fh $dev_template;
+      close $fh;
+      $c->stash->{use_dev_template} = 1;
+  }
+
+  $c->forward('WormBase::Web::View::TT');
+}
 # This kills our app if anyone visits this action...
 # /quit, used for profiling so that NYTProf can exit cleanly.
 # sub quit :Global { exit(0) }

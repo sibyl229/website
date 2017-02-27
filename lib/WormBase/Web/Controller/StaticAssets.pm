@@ -48,7 +48,7 @@ sub manifest :Path("/asset-manifest.json")  {
     $c->serve_static_file("client/build/asset-manifest.json");
   } else {
     $c->response->status(404);
-    $c->stash->{noboiler} = 1;
+    $c->forward('Root', 'call_render');
   }
 }
 
@@ -68,7 +68,7 @@ sub _webpack_dev_server_handler {
       $c->response->redirect("$dev_server_url/$path");
   } else {
     $c->response->status(404);
-    $c->stash->{noboiler} = 1;
+    $c->forward('Root', 'call_render');
   }
 }
 
