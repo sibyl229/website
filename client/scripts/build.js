@@ -128,7 +128,9 @@ function symlinkAssets(stats) {
   // add symlink main.min.css
   var mainCssAsset = assets.filter(asset => /main\.\w+\.css$/.test(asset.name));
   if (mainCssAsset.length === 1) {
-    fs.symlinkSync(paths.appBuild + '/' + mainCssAsset[0].name, paths.appBuild + '/static/css/main.min.css');
+    var cssTarget = paths.appBuild + '/' + mainCssAsset[0].name;
+    var cssSymlink = paths.appBuild + '/static/css/main.min.css';
+    fs.symlinkSync(path.relative(path.dirname(cssSymlink), cssTarget), cssSymlink);
     console.log('symlink for ' + chalk.cyan('main.min.css') + ' is added');
   } else {
     printErrors('Only 1 main.[hash].css is expected', mainJsAsset);
@@ -138,7 +140,9 @@ function symlinkAssets(stats) {
   // add symlink wormbase.min.js
   var mainJsAsset = assets.filter(asset => /main\.\w+\.js$/.test(asset.name));
   if (mainJsAsset.length === 1) {
-    fs.symlinkSync(paths.appBuild + '/' + mainJsAsset[0].name, paths.appBuild + '/static/js/wormbase.min.js');
+    var jsTarget = paths.appBuild + '/' + mainJsAsset[0].name;
+    var jsSymlink = paths.appBuild + '/static/js/wormbase.min.js';
+    fs.symlinkSync(path.relative(path.dirname(jsSymlink), jsTarget), jsSymlink);
     console.log('symlink for ' + chalk.cyan('wormbase.min.js') + ' is added');
   } else {
     printErrors('Only 1 main.[hash].js is expected', mainJsAsset);
