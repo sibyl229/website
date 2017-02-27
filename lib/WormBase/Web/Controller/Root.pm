@@ -119,62 +119,6 @@ sub footer :Path("/footer") Args(0) {
       $c->stash->{template} = 'footer/default.tt2';
 }
 
-# everything processed by webpack
-sub webpack_dev_server {
-  my ($self,$c) = @_;
-  my $dev_server_url = $c->config->{webpack_dev_server};
-  if ($dev_server_url && LWP::Simple::head($dev_server_url)) {
-    return $dev_server_url;
-  }
-}
-
-sub static :LocalRegex('^(\d+\.)?static\/.+') {
-    my ($self,$c) = @_;
-    my $path = $c->request->path;
-    my $dev_server_url = $self->webpack_dev_server($c);
-    if ($dev_server_url) {
-        $c->response->redirect("$dev_server_url/$path");
-    } else {
-        $c->serve_static_file("client/build/$path");
-    }
-}
-
-sub static_bypass :LocalRegex('^static-bypass\/.+') {
-  # static assets that bypass webpack, because webpack would break them
-  # ie, arbor.js
-  my ($self,$c) = @_;
-  my $path = $c->request->path;
-  if ($self->webpack_dev_server($c)) {
-    $c->serve_static_file("client/public/$path");
-  } else {
-    $c->serve_static_file("client/build/$path");
-  }
-}
-
-sub sockjs :Path("/sockjs-node") Args {
-  # used to refresh page when webpack bundle changes
-  my ($self,$c) = @_;
-  $self->_webpack_dev_server_handler($c);
-}
-
-sub hot_update_json :LocalRegex('^.*\.hot-update\.js(on)?$') {
-  my ($self,$c) = @_;
-  $self->_webpack_dev_server_handler($c);
-}
-
-sub _webpack_dev_server_handler {
-  my ($self,$c) = @_;
-  my $path = $c->request->path;
-  my $dev_server_url = $self->webpack_dev_server($c);
-  if ($dev_server_url) {
-      $c->response->redirect("$dev_server_url/$path");
-  } else {
-    $c->forward('soft_404');
-  }
-}
-
-# End of webpack related routes
-
 sub me :Path("/me") Args(0) {
     my ( $self, $c ) = @_;
     $c->stash->{'section'} = 'me';
@@ -246,10 +190,10 @@ sub end : ActionClass('RenderView') {
   if($path =~ /\.html/){
       $c->serve_static_file($c->path_to("root/static/$path"));
   }
-  elsif (!($path =~ /cgi-?bin/i || $c->action->name eq 'draw' || $path =~ /\.(png|jpg|svg|js|css|json)/ || $path =~ /^sockjs-node/)) {
+  elsif (!($path =~ /cgi-?bin/i || $c->action->name eq 'draw' || $path =~ /\.(png|jpg|svg|js|css|json)/)) {
 
       # when webpack dev server is used, save the index.html as a tt2 template
-      my $dev_server_url = $self->webpack_dev_server($c);
+      my $dev_server_url = $c->config->{webpack_dev_server};
       if ($dev_server_url && (my $dev_template = LWP::Simple::get($dev_server_url))) {
           my $template_filepath = $c->path_to("root/templates/boilerplate/dev_html");
           open(my $fh, ">", $template_filepath)
