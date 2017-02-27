@@ -41,6 +41,17 @@ sub hot_update_json :Regex('.*\.hot-update\.js(on)?$') {
   $self->_webpack_dev_server_handler($c);
 }
 
+sub manifest :Path("/asset-manifest.json")  {
+  my ($self,$c) = @_;
+  unless ($self->webpack_dev_server($c)) {
+    # manifest file is only relevant when serving the build/
+    $c->serve_static_file("client/build/asset-manifest.json");
+  } else {
+    $c->response->status(404);
+    $c->stash->{noboiler} = 1;
+  }
+}
+
 sub webpack_dev_server {
   my ($self,$c) = @_;
   my $dev_server_url = $c->config->{webpack_dev_server};
@@ -56,7 +67,8 @@ sub _webpack_dev_server_handler {
   if ($dev_server_url) {
       $c->response->redirect("$dev_server_url/$path");
   } else {
-    $c->forward('soft_404');
+    $c->response->status(404);
+    $c->stash->{noboiler} = 1;
   }
 }
 
@@ -65,6 +77,7 @@ sub _webpack_dev_server_handler {
 sub end : ActionClass('RenderView') {
   my ($self,$c) = @_;
   # DO NOTHING. Override end action in Root.pm
+  # because these don't need rendering by Catalyst
   return;
 }
 
