@@ -61,14 +61,14 @@ To build the static assets **for deployment**:
 
 To run Webpack dev server with hot module replacement **for development**:
 
-    * Ensure the Catalyst server is running. Choose a free port MY_PORT_NUMBER (
-      different from the port that runs your Catalyst server). Then:
+* Ensure the Catalyst server is running. Choose a free port MY_PORT_NUMBER (
+different from the port that runs your Catalyst server). Then:
 
     cd client/
     PORT=[MY_PORT_NUMBER] npm run start
 
-    * In wormbase_local.conf, let Catalyst server know to Webpack dev server to
-    use for static assets
+* In wormbase_local.conf, let Catalyst server know to Webpack dev server to
+use for static assets
 
     webpack_dev_server = "http://dev.wormbase.org:[MY_PORT_NUMBER]"
 
