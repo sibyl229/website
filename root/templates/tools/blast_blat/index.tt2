@@ -1,7 +1,7 @@
 
 
 <head>
-    <link rel="stylesheet" type="text/css" href="/css/blast_pages.css" />
+    <link rel="stylesheet" type="text/css" href="/static-bypass/blast_blat/blast_pages.css" />
 </head>
 
 
@@ -211,7 +211,4 @@ Documentation
 
 
 
-<script src="/js/blast_blat/search_form.js"></script>
-
-
-
+<script src="/static-bypass/blast_blat/search_form.js"></script>

@@ -1,7 +1,7 @@
 
 <head>
-    <link rel="stylesheet" type="text/css" href="/css/blast_pages.css" />
-    <script src="/js/blast_blat/display_results.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static-bypass/blast_blat/blast_pages.css" />
+    <script src="/static-bypass/blast_blat/display_results.js"></script>
 
 </head>
 
@@ -42,5 +42,3 @@ Jump to BioProject:
     [% END %]
   </div>
 [% END %]
-
-
