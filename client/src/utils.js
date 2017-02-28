@@ -57,16 +57,6 @@ LegacyPlugin.lookup = {
   ]))
 }
 
-// LegacyPlugin.pStyle = {
-//   dataTables: "jquery/plugins/dataTables/media/css/demo_table.css",
-//   colorbox: "jquery/plugins/colorbox/colorbox/colorbox.css",
-//   markitup: "jquery/plugins/markitup/skins/markitup/style.css",
-//   "markitup-wiki": "jquery/plugins/markitup/sets/wiki/style.css",
-//   tabletools: "jquery/plugins/tabletools/media/css/TableTools.css",
-//   qtip: "jquery/plugins/qtip2/2.2.0/jquery.qtip.min.css",
-//   icheck: "jquery/plugins/icheck-1.0.2/skins/square/aero.css"
-// };
-
 export {
   LegacyPlugin
 };
