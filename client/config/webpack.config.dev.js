@@ -144,44 +144,17 @@ module.exports = {
       // "style" loader turns CSS into JS modules that inject <style> tags.
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
-      // {
-      //   test: /\.css$/,
-      //   use: [
-      //     'style-loader', {
-      //       loader: 'css-loader',
-      //       options: {
-      //         importLoaders: 1
-      //       }
-      //     }, {
-      //       loader: 'postcss-loader',
-      //       options: {
-      //         ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-      //         plugins: function () {
-      //           return [
-      //             autoprefixer({
-      //               browsers: [
-      //                 '>1%',
-      //                 'last 4 versions',
-      //                 'Firefox ESR',
-      //                 'not ie < 9', // React doesn't support IE8 anyway
-      //               ]
-      //             })
-      //           ]
-      //         }
-      //       }
-      //     }
-      //   ]
-      // },
       {
         test: /\.css$/,
+        // use ExtractTextPlugin to avoid a flash of unstyled content
+        // at the cost of No More Hot editing of CSS
         loader: ExtractTextPlugin.extract(Object.assign({
           fallback: 'style-loader',
           use: [
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 1,
-                root: '..'
+                importLoaders: 1
               }
             }, {
               loader: 'postcss-loader',
