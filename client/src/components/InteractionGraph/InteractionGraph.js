@@ -109,7 +109,12 @@ export default class InteractionGraph extends Component {
     const interactionTypes = [... new Set(this.props.interactions.map((interaction) => interaction.type))];
     return (
       <div>
-        <Graph />
+        <Graph
+          nodes={[{id: 1}, {id: 2}, {id: 3}]}
+          edges={[{source: 1, target: 2}, {source: 3, target: 1}]}
+          width={500}
+          height={500}
+        />
         <h4>Interaction types:</h4>
         {this.renderInteractionTypeSelect('all')}
         <ul>
@@ -143,9 +148,9 @@ export default class InteractionGraph extends Component {
                 ['gi-module-one', 'gi-module-two', 'gi-module-three'].map((giModule) => {
                   const descendentTypes = this.getDescentTypes(giModule);
                   return (
-                    <li>
+                    <li key={giModule}>
                       {this.renderInteractionTypeSelect(giModule)}
-                      <ul key={giModule}>
+                      <ul>
                         {
                           descendentTypes.map((t) => (
                             <li key={t}>
