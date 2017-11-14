@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Graph from './Graph';
 
 export default class InteractionGraph extends Component {
   static propTypes = {
@@ -108,6 +109,7 @@ export default class InteractionGraph extends Component {
     const interactionTypes = [... new Set(this.props.interactions.map((interaction) => interaction.type))];
     return (
       <div>
+        <Graph />
         <h4>Interaction types:</h4>
         {this.renderInteractionTypeSelect('all')}
         <ul>
