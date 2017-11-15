@@ -70,14 +70,15 @@ export default class Graph extends Component {
                 <Group key={d.id} transform={(new Transform().translate(d.x, d.y))}>
                   <Circle r={5} fill={d.color} />
                   <Group transform={(new Transform().scale(0.5))}>
+                    <Text alignment="middle" fill={"black"} strokeWidth="3" stroke="white">{d.label}</Text>
                     <Text alignment="middle" fill={"black"}>{d.label}</Text>
-                  </Group>
+                </Group>
                 </Group>
               ))
             }
           </Group>
         </Surface>
       </div>
-);
+    );
   }
 }
