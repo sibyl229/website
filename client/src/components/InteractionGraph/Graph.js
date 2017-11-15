@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Surface, Group, Shape } from 'react-art';
+import { Surface, Shape, Group, Text, Transform } from 'react-art';
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
 import 'art/modes/svg';
 
@@ -39,17 +39,14 @@ export default class Graph extends Component {
   }
 
   redraw = () => {
-    console.log(this.copiedNodes);
     this.setState({
       annotatedNodes: this.copiedNodes,
       annotatedEdges: this.copiedEdges
     })
   }
 
-  copyNodes
 
   render() {
-    console.log('AAAAA');
     return (
       <div>
         <h3>Placeholder for a graph</h3>
@@ -57,21 +54,30 @@ export default class Graph extends Component {
           width={700}
           height={700}
           style={{cursor: 'pointer'}}>
-          <Circle x={100} y={100} r={30} fill="yellow" />
-          {
-            (this.state.annotatedNodes || []).map((d) => <Circle x={d.x} y={d.y} r={5} fill="black" />)
-          }
-          {
-            (this.state.annotatedEdges || []).map((d) => (
-              <Shape
-                d={`M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.target.y}`}
-                stroke="black"
-                strokeWidth={1}
-              />
-            ))
-          }
+          <Group transform={(new Transform().translate(350, 350).scale(2).translate(-350, -350))}>
+            {
+              (this.state.annotatedEdges || []).map((d) => (
+                <Shape
+                  key={d.id}
+                  d={`M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.target.y}`}
+                  stroke={d.color}
+                  strokeWidth={1}
+                />
+              ))
+            }
+            {
+              (this.state.annotatedNodes || []).map((d) => (
+                <Group key={d.id} transform={(new Transform().translate(d.x, d.y))}>
+                  <Circle r={5} fill={d.color} />
+                  <Group transform={(new Transform().scale(0.5))}>
+                    <Text alignment="middle" fill={"black"}>{d.label}</Text>
+                  </Group>
+                </Group>
+              ))
+            }
+          </Group>
         </Surface>
       </div>
-    );
+);
   }
 }

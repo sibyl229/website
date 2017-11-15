@@ -8,14 +8,20 @@ export default class InteractionGraph extends Component {
       PropTypes.shape({
         type: PropTypes.string
       })
+    ),
+    interactorMap: PropTypes.objectOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired
+      })
     )
   };
 
   resetSelectedTypes = () => {
     const defaultExcludes = new Set(['predicted', 'does-not-regulate', 'gi-module-three:neutral']);
-    const availableTypes = [... new Set(this.props.interactions.map((interaction) => interaction.type))];
+    const availableTypes = new Set(this.props.interactions.map((interaction) => interaction.type));
     this.setState({
-      interactionTypeSelected: availableTypes.filter(
+      interactionTypeSelected: [...availableTypes].filter(
         (t) => !defaultExcludes.has(t)
       )
     })
@@ -39,6 +45,7 @@ export default class InteractionGraph extends Component {
   }
 
   getDescentTypes = (type) => {
+    const availableTypes = new Set(this.props.interactions.map((interaction) => interaction.type));
     const interactionTypes = [
       'predicted',
       'physical',
@@ -47,7 +54,7 @@ export default class InteractionGraph extends Component {
       'gi-module-one',
       'gi-module-two',
       'gi-module-three',
-      ... new Set(this.props.interactions.map((interaction) => interaction.type))
+      ...availableTypes
     ];
     if (type === 'all') {
       return interactionTypes;
@@ -106,12 +113,31 @@ export default class InteractionGraph extends Component {
   }
 
   render() {
-    const interactionTypes = [... new Set(this.props.interactions.map((interaction) => interaction.type))];
+    const nodes = Object.keys(this.props.interactorMap).map((interactorId) => {
+      const {label} = this.props.interactorMap[interactorId];
+      return {
+        id: interactorId,
+        label: label,
+        color: 'gray'
+      };
+    });
+    const edges = this.props.interactions.map(({effector, affected, direction, type}) => {
+      const source = effector.id;
+      const target = affected.id;
+      return {
+        id: `${source}|${target}|${type}`,
+        source: source,
+        target: target,
+        color: 'gray',
+        directioned: direction !== "non-directional"
+      };
+    });
+
     return (
       <div>
         <Graph
-          nodes={[{id: 1}, {id: 2}, {id: 3}]}
-          edges={[{source: 1, target: 2}, {source: 3, target: 1}]}
+          nodes={nodes}
+          edges={edges}
           width={500}
           height={500}
         />
