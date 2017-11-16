@@ -23,15 +23,15 @@ export default class Graph extends Component {
   }
   componentDidMount = () => {
     this.simulation = forceSimulation()
-      .force("link", forceLink().id(function(d) { return d.id; }))
-      .force("charge", forceManyBody())
+      .force("link", forceLink().id(function(d) { return d.id; }).distance(100))
+      .force("charge", forceManyBody().strength(-100))
       .force("center", forceCenter(this.props.width / 2, this.props.height / 2))
       .on("tick", this.redraw);
 
     const canvas = findDOMNode(this._canvas);
 
     const dragsubject = () => {
-      return this.simulation.find(event.x, event.y, 5);
+      return this.simulation.find(event.x, event.y, 15);
     }
 
     const dragstarted = () => {
@@ -103,10 +103,10 @@ export default class Graph extends Component {
             {
               (this.state.annotatedNodes || []).map((d) => (
                 <Group key={d.id} transform={(new Transform().translate(d.x, d.y))}>
-                  <Circle r={5} fill={d.color} />
+                  <Circle r={15} fill={d.color} />
                   <Group>
-                    <Text alignment="middle" font="10px helvetica" fill={"black"} strokeWidth={3} stroke="white" opacity={0.5}>{d.label}</Text>
-                    <Text alignment="middle" font="10px helvetica" fill={"black"}>{d.label}</Text>
+                    <Text alignment="middle" font="12px helvetica" fill={"black"} strokeWidth={3} stroke="white" opacity={0.5}>{d.label}</Text>
+                    <Text alignment="middle" font="12px helvetica" fill={"black"}>{d.label}</Text>
                   </Group>
                 </Group>
               ))
