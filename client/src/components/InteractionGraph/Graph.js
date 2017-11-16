@@ -4,7 +4,7 @@ import { Surface, Shape, Group, Text, Transform } from 'react-art';
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force';
 import { select, event } from 'd3-selection';
 import { drag } from 'd3-drag';
-//import 'art/modes/svg';
+import 'art/modes/svg';
 
 class Circle extends Component {
   render() {
@@ -47,8 +47,8 @@ export default class Graph extends Component {
 
     const dragended = () => {
       if (!event.active) this.simulation.alphaTarget(0);
-      event.subject.fx = null;
-      event.subject.fy = null;
+      /* event.subject.fx = null;
+       * event.subject.fy = null;*/
     }
 
     select(canvas)
@@ -105,7 +105,7 @@ export default class Graph extends Component {
                 <Group key={d.id} transform={(new Transform().translate(d.x, d.y))}>
                   <Circle r={5} fill={d.color} />
                   <Group>
-                    <Text alignment="middle" font="10px helvetica" fill={"black"} strokeWidth={3} stroke="white">{d.label}</Text>
+                    <Text alignment="middle" font="10px helvetica" fill={"black"} strokeWidth={3} stroke="white" opacity={0.5}>{d.label}</Text>
                     <Text alignment="middle" font="10px helvetica" fill={"black"}>{d.label}</Text>
                   </Group>
                 </Group>
