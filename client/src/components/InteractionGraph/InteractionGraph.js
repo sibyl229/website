@@ -124,12 +124,16 @@ export default class InteractionGraph extends Component {
     const edges = this.props.interactions.map(({effector, affected, direction, type}) => {
       const source = effector.id;
       const target = affected.id;
+      const inferredTypes = new Set(this.getInferredTypes(type));
+
       return {
         id: `${source}|${target}|${type}`,
         source: source,
         target: target,
-        color: 'gray',
-        directioned: direction !== "non-directional"
+        color: inferredTypes.has('genetic') ? 'blue' : 'gray',
+        strength: inferredTypes.has('genetic') ? 0.1 : 1,
+        directioned: direction !== "non-directional",
+        type: type
       };
     });
 

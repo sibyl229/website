@@ -23,7 +23,7 @@ export default class Graph extends Component {
   }
   componentDidMount = () => {
     this.simulation = forceSimulation()
-      .force("link", forceLink().id(function(d) { return d.id; }).distance(100))
+      .force("link", forceLink().id(function(d) { return d.id; }).distance(100).strength(d => d.strength))
       .force("charge", forceManyBody().strength(-100))
       .force("center", forceCenter(this.props.width / 2, this.props.height / 2))
       .on("tick", this.redraw);
