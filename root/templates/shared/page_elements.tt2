@@ -320,6 +320,38 @@ END;
 [% END %]
 
 
+[% MACRO build_data_table BLOCK;
+
+      local_data = passed_data ? passed_data : fields.$key.data;
+
+      UNLESS local_data.0.exists(order.0);
+        IF ref(local_data) == 'ARRAY';
+          # just print the list of objects
+          cell_content(local_data);
+        ELSE;
+          # link to search results if classsearch provided, and only string returned
+          # this will happen on very large tables
+          classsearch ? searchlink(classsearch, object.name.data.id, local_data): local_data;
+        END;
+      ELSE;
+        key = key || widget;
+        headers = [];
+        FOREACH o IN order; headers.push(columns.$o); END;
+
+        # generate table
+        table_id = "table_${key}";
+        %]
+        <div id=[% table_id %]></div>
+        <script type="text/javascript" >
+          WB.buildDataTable([% table_id %], [% json_encode(local_data) %], [% json_encode(columns) %], [% json_encode(order) %]);
+        </script>
+        [%
+#        jquery_data_table_html(headers, local_data, "table_${key}" _ colorbox, style, table_build, order, separator, listener, column_args);
+      END;
+    END; # END of MACRO
+%]
+
+
 [%#
 
     Build a JQuery dataTable.
@@ -336,7 +368,7 @@ END;
    necessary to include multiple tables in a single field.
 %]
 
-[% MACRO build_data_table BLOCK;
+[% MACRO build_data_table_v1 BLOCK;
 
       local_data = passed_data ? passed_data : fields.$key.data;
 

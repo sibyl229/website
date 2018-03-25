@@ -23,6 +23,7 @@
 
 var React = require('../../client/node_modules/react');
 var ReactDOM = require('../../client/node_modules/react-dom');
+var DataTable = require('../../client/src/components/DataCell').DataTable;
 
 var name2widget = {
   'references': require('../../client/src/components/widgets/shared/references').default
@@ -3209,6 +3210,16 @@ var Scrolling = (function(){
       ReactDOM.render(<WidgetComponent data={data} />, document.getElementById(elementId));
     }
 
+    function buildDataTable(elementId, data, columnNames, columnOrder) {
+      var columns = columnOrder.map(function(columnKey){
+        return {
+          Header: columnNames[columnKey],
+          accessor: columnKey,
+        };
+      });
+      ReactDOM.render(<DataTable data={data} columns={columns} />, document.getElementById(elementId));
+    }
+
     var initJbrowseView = function(elementSelector, url) {
       function reset() {
         $jq(elementSelector).find('iframe').attr('src', url);
@@ -3474,6 +3485,7 @@ var Scrolling = (function(){
       tooltipInit: tooltipInit,                     // initalize tooltip
       initJbrowseView: initJbrowseView,             // initialize jbrowse view iframe to specified src
       renderWidget: renderWidget,                   // render widget component
+      buildDataTable: buildDataTable,               // build data table
     };
   })();
 
