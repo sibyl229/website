@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@wormbase/react-scripts-for-catalyst@1.0.9-3":
-  version "1.0.9-3"
-  resolved "https://registry.yarnpkg.com/@wormbase/react-scripts-for-catalyst/-/react-scripts-for-catalyst-1.0.9-3.tgz#7010ac3446c5811e348085d6ff13dfa35e51b48a"
+"@wormbase/react-scripts-for-catalyst@^1.0.9-6":
+  version "1.0.9-6"
+  resolved "https://registry.yarnpkg.com/@wormbase/react-scripts-for-catalyst/-/react-scripts-for-catalyst-1.0.9-6.tgz#a838d8a00d60c5dad3a08153675cd7835cac55f6"
   dependencies:
     autoprefixer "7.1.1"
     babel-core "6.25.0"
@@ -5465,9 +5465,9 @@ react-scrollbar-size@^2.0.2:
     prop-types "^15.5.10"
     react-event-listener "^0.5.0"
 
-react-table@^6.8.0:
-  version "6.8.0"
-  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.8.0.tgz#5ce402eb735df68534c03dabb3faa031478b6a58"
+react-table@6.7.6:
+  version "6.7.6"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.7.6.tgz#3f9e3b308328ceb04ef93a47babefaba2619c905"
   dependencies:
     classnames "^2.2.5"
 
