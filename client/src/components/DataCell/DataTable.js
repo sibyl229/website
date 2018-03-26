@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Table, { tableDefaults } from '../Table';
+import SmartCell from './SmartCell';
 
 const cellSortValue = (value) => {
   if (value !== null && typeof value === 'object') {
@@ -17,7 +18,9 @@ class DataTable extends Component {
       <div>
         <Table
           columns={columns.map((c) => ({
-              Cell: props => <span style={{color: 'red'}}>{JSON.stringify(props.row[c.accessor])}</span>, // Custom cell components!
+              Cell: props => (
+                <SmartCell data={props.row[c.accessor]} />
+              ), // Custom cell components!
               ...c
           }))}
           defaultSortMethod={(a, b, desc) => (
