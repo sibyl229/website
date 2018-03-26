@@ -7,6 +7,7 @@ export default class Table extends Component {
     return (
       <ReactTable
         className="-striped -highlight"
+        defaultPageSize={10}
         {...this.props}
       />
     );
