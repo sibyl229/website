@@ -7,11 +7,9 @@ class DataTable extends Component {
     const {columns, ...restProps} = this.props;
     return (
       <div>
-        <span>table placeholder</span>
-        {JSON.stringify(this.props.data)}
         <Table
           columns={columns.map((c) => ({
-              Cell: props => <span style={{color: 'red'}}>{props[c.accessor]}</span>, // Custom cell components!
+              Cell: props => <span style={{color: 'red'}}>{JSON.stringify(props.row[c.accessor])}</span>, // Custom cell components!
               ...c
           }))}
           {...restProps}
