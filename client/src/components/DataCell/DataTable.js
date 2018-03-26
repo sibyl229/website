@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Table from '../Table';
+import Table, { defaultSortMethod } from '../Table';
+
+const cellSortValue = (value) => {
+  if (value !== null && typeof value === 'object') {
+    return value.label || value.text || value.id || JSON.stringify(value);
+  } else {
+    return value;
+  }
+}
 
 class DataTable extends Component {
   render() {
@@ -12,6 +20,9 @@ class DataTable extends Component {
               Cell: props => <span style={{color: 'red'}}>{JSON.stringify(props.row[c.accessor])}</span>, // Custom cell components!
               ...c
           }))}
+          defaultSortMethod={(a, b, desc) => (
+            defaultSortMethod(cellSortValue(a), cellSortValue(b), desc)
+          )}
           {...restProps}
         />
       </div>
