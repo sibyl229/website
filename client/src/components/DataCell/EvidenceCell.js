@@ -4,7 +4,23 @@ import {Card, CardHeader, CardText} from 'material-ui/Card';
 
 const EvidenceCell = (props) => {
   const {renderContent, renderEvidence, data} = props;
-  return "EvidenceCell: " + JSON.stringify(data);
+  //return "EvidenceCell: " + JSON.stringify(data);
+  return (
+    <div>
+      {
+        renderContent({
+          contentData: data.text,
+          data: data
+        })
+      }
+      {
+        renderEvidence({
+          evidenceData: data.evidence,
+          data: data
+        })
+      }
+    </div>
+  );
 
   return (
     <Card>
