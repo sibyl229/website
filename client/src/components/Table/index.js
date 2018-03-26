@@ -8,7 +8,7 @@ export default class Table extends Component {
   render() {
     return (
       <ReactTable
-        className="-striped -highlight"
+        className="-striped"
         defaultPageSize={10}
         defaultSorted={
           this.props.columns[0] ? [{id: this.props.columns[0].id || this.props.columns[0].accessor }] : undefined
