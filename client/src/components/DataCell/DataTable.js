@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Table, { defaultSortMethod } from '../Table';
+import Table, { tableDefaults } from '../Table';
 
 const cellSortValue = (value) => {
   if (value !== null && typeof value === 'object') {
@@ -21,7 +21,7 @@ class DataTable extends Component {
               ...c
           }))}
           defaultSortMethod={(a, b, desc) => (
-            defaultSortMethod(cellSortValue(a), cellSortValue(b), desc)
+            tableDefaults.defaultSortMethod(cellSortValue(a), cellSortValue(b), desc)
           )}
           {...restProps}
         />
