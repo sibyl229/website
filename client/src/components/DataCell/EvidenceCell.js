@@ -1,51 +1,51 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
+import { withStyles } from 'material-ui/styles';
+import { ExpandMore, ExpandLess } from '../icons';
+import Collapse from '../Collapse';
 
-const EvidenceCell = (props) => {
-  const {renderContent, renderEvidence, data} = props;
-  //return "EvidenceCell: " + JSON.stringify(data);
-  return (
-    <div>
-      {
-        renderContent({
-          contentData: data.text,
-          data: data
-        })
-      }
-      {
-        renderEvidence({
-          evidenceData: data.evidence,
-          data: data
-        })
-      }
-    </div>
-  );
+class EvidenceCell extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+    };
+  }
 
-  return (
-    <Card>
-      <CardHeader
-        title={
-          renderContent({
-            contentData: data.text,
-            data: data
-          })
-        }
-        showExpandableButton={true}
-      />
-      <CardText expandable={true}>
-        <span>
-        {
-          renderEvidence({
-            evidenceData: data.evidence,
-            data: data
-          })
-        }
-        </span>
-      </CardText>
-    </Card>
-  );
-};
+  handleToggle = () => {
+    this.setState((prevState) => ({
+      open: !prevState.open,
+    }));
+  }
+
+  render() {
+    const {renderContent, renderEvidence, data, classes} = this.props;
+    //return "EvidenceCell: " + JSON.stringify(data);
+    return (
+      <div>
+        <div className={classes.main} onClick={this.handleToggle}>
+          {
+            renderContent({
+              contentData: data.text,
+              data: data
+            })
+          }
+          <div>
+            {this.state.open ? <ExpandLess /> : <ExpandMore />}
+          </div>
+        </div>
+        <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+          {
+            renderEvidence({
+              evidenceData: data.evidence,
+              data: data
+            })
+          }
+        </Collapse>
+      </div>
+    );
+  }
+}
 
 EvidenceCell.propTypes = {
   data: PropTypes.shape({
@@ -53,7 +53,16 @@ EvidenceCell.propTypes = {
     evidence: PropTypes.object
   }),
   renderContent: PropTypes.func,
-  renderEvidence: PropTypes.func
+  renderEvidence: PropTypes.func,
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default EvidenceCell;
+const style = (theme) => ({
+  main: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+});
+
+export default withStyles(style, {withTheme: true})(EvidenceCell);
