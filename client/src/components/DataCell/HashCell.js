@@ -42,7 +42,7 @@ const styles = (theme) => {
     key: {
       fontWeight: 700,
       margin: `0 ${theme.spacing.unit / 4}px`,
-      flex: '0 1 auto',
+      flex: '0 1 100px',
     },
     value: {
       margin: -theme.spacing.unit / 4,
