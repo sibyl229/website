@@ -1,24 +1,46 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
 import Link from '../Link';
 
-const SimpleCell = (props) => {
-  const {data} = props;
-  if (data !== null && typeof data === 'object') {
-    if (data.text && typeof data.text !== 'object') {
-      return <span>{data.text}</span>;
-    } else if (data.class) {
-      return <Link {...data} />;
+class SimpleCell extends Component {
+  renderByCases() {
+    const {data} = this.props;
+    if (data !== null && typeof data === 'object') {
+      if (data.text && typeof data.text !== 'object') {
+        return <span>{data.text}</span>;
+      } else if (data.class) {
+        return <Link {...data} />;
+      } else {
+        return (<span style={{wordBreak: 'break-all'}}>{JSON.stringify(data)}</span>);
+      }
     } else {
-      return (<span style={{wordBreak: 'break-all'}}>{JSON.stringify(data)}</span>);
+      return <span>{data}</span>;
     }
-  } else {
-    return <span>{data}</span>;
   }
-};
+
+  render() {
+    const {classes} = this.props;
+    return (
+      <div className={classes.root}>
+        {this.renderByCases()}
+      </div>
+    );
+  };
+}
 
 SimpleCell.propTypes = {
-  data: PropTypes.any
+  data: PropTypes.any,
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default SimpleCell;
+const style = (theme) => {
+  return {
+    root: {
+      margin: theme.spacing.unit / 2,
+    }
+  };
+};
+
+export default withStyles(style, {withTheme: true})(SimpleCell);

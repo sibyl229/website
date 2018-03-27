@@ -7,7 +7,7 @@ import { hasContent } from './utils';
 const HashCell = (props) => {
   const {data, render, classes} = props;
   return (
-    <div>
+    <div className={classes.root}>
     {
       Object.keys(data).filter((key) => (
         hasContent(data[key])
@@ -31,17 +31,21 @@ HashCell.propTypes = {
 
 const styles = (theme) => {
   return {
+    root: {
+      margin: theme.spacing.unit / 4,
+    },
     pair: {
       display: 'flex',
       flexWrap: 'wrap',
-      margin: theme.spacing.unit / 2,
       padding: 0,
     },
     key: {
       fontWeight: 700,
+      margin: `0 ${theme.spacing.unit / 4}px`,
       flex: '0 1 auto',
     },
     value: {
+      margin: -theme.spacing.unit / 4,
     },
   }
 };

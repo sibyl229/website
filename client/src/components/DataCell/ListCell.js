@@ -32,12 +32,12 @@ ListCell.propTypes = {
 const style = (theme) => {
   return {
     ul: {
-      margin: 0,
-      padding: `0 ${theme.spacing.unit}px`,
+      margin: theme.spacing.unit / 4,
+      padding: 0,
       listStyleType: 'none',
     },
     li: {
-
+      margin: -theme.spacing.unit / 4,
     },
   };
 };
