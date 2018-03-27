@@ -24,16 +24,17 @@ class EvidenceCell extends Component {
     return (
       <div>
         <div className={classes.main} onClick={this.handleToggle}>
+          <div>
+            {this.state.open ? <ExpandLess /> : <ExpandMore />}
+          </div>
           {
             renderContent({
               contentData: data.text,
               data: data
             })
           }
-          <div>
-            {this.state.open ? <ExpandLess /> : <ExpandMore />}
-          </div>
         </div>
+        <div className={classes.more}>
         <Collapse in={this.state.open} timeout="auto" unmountOnExit>
           {
             renderEvidence({
@@ -42,6 +43,7 @@ class EvidenceCell extends Component {
             })
           }
         </Collapse>
+        </div>
       </div>
     );
   }
@@ -61,7 +63,9 @@ EvidenceCell.propTypes = {
 const style = (theme) => ({
   main: {
     display: 'flex',
-    justifyContent: 'space-between',
+  },
+  more: {
+    marginLeft: theme.spacing.unit * 3,
   },
 });
 
