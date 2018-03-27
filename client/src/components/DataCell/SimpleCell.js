@@ -15,7 +15,7 @@ class SimpleCell extends Component {
         return (<span style={{wordBreak: 'break-all'}}>{JSON.stringify(data)}</span>);
       }
     } else if (typeof data === 'string' && data.search(/<.+\/?>/) > -1) {
-      return <div dangerouslySetInnerHTML={{__html: thisIsMyCopy}} />;
+      return <div dangerouslySetInnerHTML={{__html: data}} />;
     } else {
       return <span>{data}</span>;
     }
