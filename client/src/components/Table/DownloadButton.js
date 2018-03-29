@@ -23,7 +23,11 @@ class DownloadButton extends Component {
               status: 'READY',
             });
           }
-        );
+        ).catch(() => {
+          this.setState({
+            status: 'READY',
+          });
+        });
       });
     }
   }
