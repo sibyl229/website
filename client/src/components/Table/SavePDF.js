@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DownloadButton from './DownloadButton';
+import Button from '../Button';
+//import DownloadButton from './DownloadButton';
 
 class SavePDF extends Component {
+
   generateContent = () => {
+    const newWindow = window.open('', '_blank');
     return Promise.all([
       import('react-dom/server'),
       import('jspdf')
@@ -27,9 +30,18 @@ class SavePDF extends Component {
               <meta name="theme-color" content="#000000">
               ${styles}
             </head>
-          <body>${htmlFragment}</body>
+          <body><div id="x">${htmlFragment}</div></body>
+          <script>
+            //window.addEventListener("load", function(event) {
+            console.log("All resources finished loading!");
+            window.print();
+//printJS('x', 'html')
+          //});
+          </script>
           </html>
       `;
+      newWindow.location = "about:blank"
+      newWindow.document.write(html);
       return html;
     }).catch(() => {
       throw new Error();
@@ -37,8 +49,11 @@ class SavePDF extends Component {
   }
 
   fileSaveFunc = (content) => {
-    console.log('done');
-//    Promise.resolve(content).then((doc) => doc.save('x.pdf'))
+    if (window && window.document) {
+      //const newWindow = window.open('', '_blank');
+      // this.newWindow.document.write(content);
+    }
+    //    Promise.resolve(content).then((doc) => doc.save('x.pdf'))
   }
   /* fileSaveFunc = (content) => {
    *   console.log(content);
@@ -56,11 +71,7 @@ class SavePDF extends Component {
   render() {
     const {data, ...restProps} = this.props;
     return (
-      <DownloadButton
-        contentFunc={this.generateContent}
-        fileName="download.html"
-        {...restProps}
-      />
+      <Button raised onClick={this.generateContent}>PDF</Button>
     );
   }
 }
