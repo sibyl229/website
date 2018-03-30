@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DownloadButton from './DownloadButton';
 
-class SavePDF extends Component {
+class Print extends Component {
 
   generateContent = () => {
     const newWindow = window.open('', '_blank');
@@ -64,8 +64,8 @@ class SavePDF extends Component {
   }
 }
 
-SavePDF.propTypes = {
+Print.propTypes = {
   node: PropTypes.node,
 };
 
-export default SavePDF;
+export default Print;

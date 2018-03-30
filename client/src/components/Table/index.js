@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTable, { ReactTableDefaults } from 'react-table';
 import SaveJSON from './SaveJSON';
-import SavePDF from './SavePDF';
+import Print from './Print';
 import 'react-table/react-table.css';
 import './styles.css';
 
@@ -21,7 +21,7 @@ export default class Table extends Component {
     return (
       <div>
         <SaveJSON data={this.props.data}>JSON</SaveJSON>
-        <SavePDF node={table}>PDF</SavePDF>
+        <Print node={table}>Print</Print>
         {table}
       </div>
     );
