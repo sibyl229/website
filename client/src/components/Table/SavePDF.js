@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../Button';
-//import DownloadButton from './DownloadButton';
+import DownloadButton from './DownloadButton';
 
 class SavePDF extends Component {
 
@@ -44,8 +43,6 @@ class SavePDF extends Component {
           </script>
           </html>
       `;
-      //      newWindow.location = "about:blank";
-      //      newWindow.document.body.innerHTML = '';
       newWindow.document.open();  // clears existing page content
       newWindow.document.write(html);
       newWindow.document.close;
@@ -55,30 +52,14 @@ class SavePDF extends Component {
     });
   }
 
-  fileSaveFunc = (content) => {
-    if (window && window.document) {
-      //const newWindow = window.open('', '_blank');
-      // this.newWindow.document.write(content);
-    }
-    //    Promise.resolve(content).then((doc) => doc.save('x.pdf'))
-  }
-  /* fileSaveFunc = (content) => {
-   *   console.log(content);
-   *   import('file-saver').then((module) => {
-   *     const {saveAs} = module;
-   *     console.log(content);
-   *     console.log(module);
-   *     console.log(this);
-   *     const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
-   *     saveAs(blob, this.props.fileName || 'download.txt');
-   *   });
-   * }*/
-
-
   render() {
     const {data, ...restProps} = this.props;
     return (
-      <Button raised onClick={this.generateContent}>PDF</Button>
+      <DownloadButton
+        contentFunc={this.generateContent}
+        fileSaveFunc={() => {}}
+        {...restProps}
+      />
     );
   }
 }
