@@ -7,6 +7,9 @@ class SavePDF extends Component {
 
   generateContent = () => {
     const newWindow = window.open('', '_blank');
+    newWindow.document.open();
+    newWindow.document.write('Loading printable view...');
+    newWindow.document.close();
     return Promise.all([
       import('react-dom/server'),
       import('jspdf')
@@ -30,18 +33,24 @@ class SavePDF extends Component {
               <meta name="theme-color" content="#000000">
               ${styles}
             </head>
-          <body><div id="x">${htmlFragment}</div></body>
+          <body><div id="printable">Loading printable view...</div></body>
           <script>
             //window.addEventListener("load", function(event) {
-            console.log("All resources finished loading!");
-            window.print();
+            window.document.getElementById('printable').innerHTML = '${htmlFragment}';
+            //
 //printJS('x', 'html')
           //});
+            window.document.close();  // without this Firefox doesn't finish loading
+            console.log("All resources finished loading!");
+            window.print();
           </script>
           </html>
       `;
-      newWindow.location = "about:blank"
+      //      newWindow.location = "about:blank";
+      //      newWindow.document.body.innerHTML = '';
+      newWindow.document.open();  // clears existing page content
       newWindow.document.write(html);
+      newWindow.document.close;
       return html;
     }).catch(() => {
       throw new Error();
