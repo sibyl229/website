@@ -35,14 +35,12 @@ class SavePDF extends Component {
             </head>
           <body><div id="printable">Loading printable view...</div></body>
           <script>
-            //window.addEventListener("load", function(event) {
-            window.document.getElementById('printable').innerHTML = '${htmlFragment}';
-            //
-//printJS('x', 'html')
-          //});
             window.document.close();  // without this Firefox doesn't finish loading
-            console.log("All resources finished loading!");
-            window.print();
+            window.addEventListener("load", function(event) {
+              window.document.getElementById('printable').innerHTML = '${htmlFragment}';
+              console.log("All resources finished loading!");
+              window.print();
+            });
           </script>
           </html>
       `;
