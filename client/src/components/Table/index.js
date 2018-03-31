@@ -29,6 +29,7 @@ export default class Table extends Component {
               printable: true,
             };
         }}
+        defaultPageSize={this.props.data.length}
       />
     );
 
