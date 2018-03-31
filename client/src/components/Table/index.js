@@ -8,21 +8,34 @@ import './styles.css';
 
 export default class Table extends Component {
   render() {
-    const table = (
+    const defaultTableProps = {
+      className: "-striped",
+      defaultPageSize: 10,
+      defaultSorted: this.props.columns[0] ? [{id: this.props.columns[0].id || this.props.columns[0].accessor }] : undefined,
+      ...this.props,
+    };
+
+    const printableTable = (
       <ReactTable
-        className="-striped"
-        defaultPageSize={10}
-        defaultSorted={
-          this.props.columns[0] ? [{id: this.props.columns[0].id || this.props.columns[0].accessor }] : undefined
+        {...defaultTableProps}
+        columns={
+          this.props.columns.map((c) => ({
+            ...c,
+          }))
         }
-        {...this.props}
+        getTdProps={(state, rowInfo, column, instance) => {
+            return {
+              printable: true,
+            };
+        }}
       />
     );
+
     return (
       <div>
         <SaveJSON data={this.props.data}>JSON</SaveJSON>
-        <Print node={table}>Print</Print>
-        {table}
+        <Print node={printableTable}>Print</Print>
+        {printableTable}
       </div>
     );
   }

@@ -18,8 +18,8 @@ class DataTable extends Component {
       <div>
         <Table
           columns={columns.map((c) => ({
-              Cell: props => (
-                <SmartCell data={props.row[c.accessor]} />
+              Cell: props => console.log(props) || (
+                <SmartCell data={props.row[c.accessor]} printable={props.tdProps.rest.printable} />
               ), // Custom cell components!
               ...c
           }))}

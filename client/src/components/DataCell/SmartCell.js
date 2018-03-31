@@ -6,6 +6,8 @@ import ListCell from './ListCell';
 import HashCell from './HashCell';
 
 function SmartCell(props) {
+  console.log(props);
+  console.log(props.printable);
   const data = props.data;
   if (data !== null && typeof data === 'object') {
     if (Array.isArray(data)) {
