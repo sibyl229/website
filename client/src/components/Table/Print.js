@@ -9,10 +9,7 @@ class Print extends Component {
     newWindow.document.open();
     newWindow.document.write('Loading printable view...');
     newWindow.document.close();
-    return Promise.all([
-      import('react-dom/server'),
-      import('jspdf')
-    ]).then(([ReactDOMServer, jsPDF]) => {
+    return import('react-dom/server').then((ReactDOMServer) => {
       const {renderToString} = ReactDOMServer;
       const htmlFragment = renderToString(this.props.node);
       const styles = document ?
