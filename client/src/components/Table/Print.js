@@ -47,8 +47,8 @@ class Print extends Component {
       newWindow.document.write(html);
       newWindow.document.close;
       return html;
-    }).catch(() => {
-      throw new Error();
+    }).catch((error) => {
+      console.log(error);
     });
   }
 
