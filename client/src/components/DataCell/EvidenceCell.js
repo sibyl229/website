@@ -8,7 +8,7 @@ class EvidenceCell extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
+      open: this.props.printable,
     };
   }
 
@@ -25,7 +25,7 @@ class EvidenceCell extends Component {
       <div>
         <div className={classes.main} onClick={this.handleToggle}>
           <div>
-            {(printable || this.state.open) ? <ExpandLess /> : <ExpandMore />}
+            {this.state.open ? <ExpandLess /> : <ExpandMore />}
           </div>
           {
             renderContent({
@@ -35,21 +35,14 @@ class EvidenceCell extends Component {
           }
         </div>
         <div className={classes.more}>
-          {
-            printable ? renderEvidence({
-              evidenceData: data.evidence,
-              data: data
-            }) : (
-              <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                {
-                  renderEvidence({
-                    evidenceData: data.evidence,
-                    data: data
-                  })
-                }
-              </Collapse>
-            )
-          }
+          <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+            {
+              renderEvidence({
+                evidenceData: data.evidence,
+                data: data
+              })
+            }
+          </Collapse>
         </div>
       </div>
     );
