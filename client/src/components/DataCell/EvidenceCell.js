@@ -19,13 +19,13 @@ class EvidenceCell extends Component {
   }
 
   render() {
-    const {renderContent, renderEvidence, data, classes} = this.props;
+    const {renderContent, renderEvidence, data, printable, classes} = this.props;
     //return "EvidenceCell: " + JSON.stringify(data);
     return (
       <div>
         <div className={classes.main} onClick={this.handleToggle}>
           <div>
-            {this.state.open ? <ExpandLess /> : <ExpandMore />}
+            {(printable || this.state.open) ? <ExpandLess /> : <ExpandMore />}
           </div>
           {
             renderContent({
@@ -35,14 +35,21 @@ class EvidenceCell extends Component {
           }
         </div>
         <div className={classes.more}>
-        <Collapse in={this.state.open} timeout="auto" unmountOnExit>
           {
-            renderEvidence({
+            printable ? renderEvidence({
               evidenceData: data.evidence,
               data: data
-            })
+            }) : (
+              <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+                {
+                  renderEvidence({
+                    evidenceData: data.evidence,
+                    data: data
+                  })
+                }
+              </Collapse>
+            )
           }
-        </Collapse>
         </div>
       </div>
     );
@@ -56,6 +63,7 @@ EvidenceCell.propTypes = {
   }),
   renderContent: PropTypes.func,
   renderEvidence: PropTypes.func,
+  printable: PropTypes.bool,
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
 };

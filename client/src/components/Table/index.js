@@ -25,6 +25,7 @@ export default class Table extends Component {
         }
         getTdProps={(state, rowInfo, column, instance) => {
             return {
+              ...(this.props.getTdProps ? this.props.getTdProps(state, rowInfo, column, instance) : {}),
               printable: true,
             };
         }}

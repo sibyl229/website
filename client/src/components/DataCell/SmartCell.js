@@ -6,52 +6,51 @@ import ListCell from './ListCell';
 import HashCell from './HashCell';
 
 function SmartCell(props) {
-  console.log(props);
   console.log(props.printable);
   const data = props.data;
   if (data !== null && typeof data === 'object') {
     if (Array.isArray(data)) {
       return (
         <ListCell
-          data={data}
           render={
-            ({elementData}) => <SmartCell data={elementData} />
+            ({elementData}) => <SmartCell {...props} data={elementData} />
           }
+          {...props}
         />
       );
     } else {
       if (data.evidence && data.text) {
         return (
           <EvidenceCell
-            data={data}
             renderContent={
-              ({contentData}) => <SmartCell data={contentData} />
+              ({contentData}) => <SmartCell {...props} data={contentData} />
             }
             renderEvidence={
-              ({evidenceData}) => <SmartCell data={evidenceData} />
+              ({evidenceData}) => <SmartCell {...props} data={evidenceData} />
             }
+            {...props}
           />
         );
       } else if (data.class || data.text) {
-        return <SimpleCell data={data} />;
+        return <SimpleCell {...props} />;
       } else {
         return (
           <HashCell
-            data={data}
             render={
-              ({elementValue}) =>  <SmartCell data={elementValue} />
+              ({elementValue}) =>  <SmartCell {...props} data={elementValue} />
             }
+            {...props}
           />
         );
       }
     }
   } else {
-    return <SimpleCell data={data} />;
+    return <SimpleCell {...props} />;
   }
 };
 
 SmartCell.propTypes = {
-  data: PropTypes.any
+  data: PropTypes.any,
 };
 
 export default SmartCell;
