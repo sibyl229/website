@@ -42,9 +42,6 @@ class DownloadButton extends Component {
   defaultFileSaveFunc = (content) => {
     import('file-saver').then((module) => {
       const {saveAs} = module;
-      console.log(content);
-      console.log(module);
-      console.log(this);
       const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
       saveAs(blob, this.props.fileName || 'download.txt');
     });

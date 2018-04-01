@@ -34,7 +34,6 @@ class Print extends Component {
             window.document.close();  // without this Firefox doesn't finish loading
             window.addEventListener("load", function(event) {
               window.document.getElementById('printable').innerHTML = '${htmlFragment}';
-              console.log("All resources finished loading!");
               window.print();
             });
           </script>
