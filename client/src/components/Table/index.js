@@ -12,6 +12,16 @@ export default class Table extends Component {
       className: "-striped",
       defaultPageSize: 10,
       defaultSorted: this.props.columns[0] ? [{id: this.props.columns[0].id || this.props.columns[0].accessor }] : undefined,
+      getTheadThProps: (state, rowInfo, column, instance) => {
+        return {
+          style: {
+            justifyContent: 'center',
+            display: 'flex',
+            alignItems: 'center',
+          },
+          ...(this.props.getTheadThProps ? this.props.getTheadThProps(state, rowInfo, column, instance) : {}),
+        }
+      },
       ...this.props,
     };
 
