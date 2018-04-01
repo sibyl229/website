@@ -18,18 +18,13 @@ export default class Table extends Component {
     const printableTable = (
       <ReactTable
         {...defaultTableProps}
-        columns={
-          this.props.columns.map((c) => ({
-            ...c,
-          }))
-        }
         getTdProps={(state, rowInfo, column, instance) => {
             return {
               ...(this.props.getTdProps ? this.props.getTdProps(state, rowInfo, column, instance) : {}),
               printable: true,
             };
         }}
-        defaultPageSize={this.props.data.length}
+        defaultPageSize={this.props.data.length || 1}
       />
     );
 
@@ -37,7 +32,7 @@ export default class Table extends Component {
       <div>
         <SaveJSON data={this.props.data}>JSON</SaveJSON>
         <Print node={printableTable}>Print</Print>
-        {printableTable}
+        <ReactTable {...defaultTableProps} />
       </div>
     );
   }
