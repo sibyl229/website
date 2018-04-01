@@ -30,6 +30,10 @@ function SmartCell(props) {
             {...props}
           />
         );
+      } else if (data.evidence) {
+        return (
+          <SmartCell {...props} data={data.evidence} />
+        );
       } else if (data.class || data.text) {
         return <SimpleCell {...props} />;
       } else {
