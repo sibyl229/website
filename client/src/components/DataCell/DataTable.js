@@ -18,10 +18,15 @@ class DataTable extends Component {
       <div>
         <Table
           columns={columns.map((c) => ({
+              ...c,
               Cell: props => (
                 <SmartCell data={props.row[c.accessor]} printable={props.tdProps.rest.printable} />
               ), // Custom cell components!
-              ...c
+              Header: props => (
+                (typeof c.Header === 'string' && c.Header.search(/<.+\/?>/) > -1) ?
+                <div dangerouslySetInnerHTML={{__html: c.Header}} /> :
+                c.Header
+              ),
           }))}
           defaultSortMethod={(a, b, desc) => (
             tableDefaults.defaultSortMethod(cellSortValue(a), cellSortValue(b), desc)
