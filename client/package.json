@@ -6,6 +6,7 @@
     "@wormbase/react-scripts-for-catalyst": "1.0.9-6"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.5",
     "cytoscape": "^3.2.6",
     "cytoscape-cola": "^2.0.1",
